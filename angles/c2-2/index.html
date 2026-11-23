@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Programa de los cursos de nivel C2.2 — Año académico 2026-27 (INGLÉS)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root {
+      --eoi-magenta: #B51748;
+      --eoi-magenta-dark: #8F1138;
+      --eoi-magenta-deeper: #6D0B2A;
+      --eoi-magenta-soft: #FBF3F6;
+      --eoi-magenta-border: #E6C7D1;
+    }
+
+    body {
+      background-color: #F7F6F7;
+      color: #1E293B;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    .eoi-bg-primary { background-color: var(--eoi-magenta); }
+    .eoi-bg-primary:hover { background-color: var(--eoi-magenta-dark); }
+    .eoi-text-primary { color: var(--eoi-magenta); }
+    .eoi-text-deep { color: var(--eoi-magenta-deeper); }
+    .eoi-border-primary { border-color: var(--eoi-magenta); }
+    .eoi-border-soft { border-color: var(--eoi-magenta-border); }
+    .eoi-bg-soft { background-color: var(--eoi-magenta-soft); }
+
+    .chevron-icon {
+      transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .is-open > button .chevron-icon {
+      transform: rotate(180deg);
+    }
+
+    .accordion-collapse {
+      display: grid;
+      grid-template-rows: 0fr;
+      opacity: 0;
+      transition:
+        grid-template-rows 0.34s cubic-bezier(0.22, 1, 0.36, 1),
+        opacity 0.24s ease;
+    }
+    .accordion-collapse.is-expanded {
+      grid-template-rows: 1fr;
+      opacity: 1;
+    }
+    .accordion-inner {
+      overflow: hidden;
+    }
+
+    @keyframes fadeSlideUp {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .animate-enter {
+      animation: fadeSlideUp 0.42s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+  <div class="mx-auto w-full max-w-5xl flex-1 px-4 py-6 sm:px-6 lg:px-8">
+
+    <!-- Cabecera institucional -->
+    <header class="animate-enter rounded-2xl border eoi-border-soft bg-white p-5 shadow-sm sm:p-7">
+      <div class="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
+
+        <!-- Logotipo oficial -->
+        <div class="flex w-full shrink-0 items-center justify-center sm:w-52">
+          <img
+            src="../../eoicert.jpg"
+            alt="Logotipo Escola Oficial d'Idiomes de Barcelona"
+            style="max-height: 108px; max-width: 100%; width: auto; height: auto; object-fit: contain;"
+            onerror="this.style.display='none'; document.getElementById('logo-fallback').classList.remove('hidden');"
+          />
+          <div id="logo-fallback" class="hidden flex items-center gap-3 rounded-xl border eoi-border-soft eoi-bg-soft px-4 py-3">
+            <span class="flex h-11 w-11 items-center justify-center rounded-full eoi-bg-primary text-xl font-extrabold text-white">eoi</span>
+            <div class="text-left leading-tight">
+              <div class="text-xs font-bold uppercase tracking-wider eoi-text-primary">barcelona</div>
+              <div class="text-xs font-bold uppercase tracking-wider eoi-text-primary">drassanes</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Título y controles superiores -->
+        <div class="flex-1 sm:pl-2">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <p class="text-xs font-bold uppercase tracking-widest eoi-text-primary">
+              ESCOLA OFICIAL D'IDIOMES · EOI BARCELONA DRASSANES
+            </p>
+
+            <div class="flex flex-wrap items-center gap-2">
+              <a
+                href="../../"
+                class="inline-flex items-center gap-1.5 rounded-full border eoi-border-soft eoi-bg-soft px-3 py-1 text-xs font-bold eoi-text-primary transition hover:border-[#B51748] hover:bg-[#F5E1E7]"
+              >
+                <span>←</span>
+                <span id="back-link-text">Guías de los cursos</span>
+              </a>
+
+              <!-- Selector Castellano / Català -->
+              <div class="inline-flex rounded-full border border-slate-200 bg-slate-100/80 p-0.5" role="group" aria-label="Selector de idioma">
+                <button
+                  type="button"
+                  id="lang-btn-es"
+                  onclick="setUILang('es')"
+                  class="rounded-full px-3 py-1 text-xs font-bold transition-all duration-200 eoi-bg-primary text-white shadow-xs"
+                >
+                  Castellano
+                </button>
+                <button
+                  type="button"
+                  id="lang-btn-ca"
+                  onclick="setUILang('ca')"
+                  class="rounded-full px-3 py-1 text-xs font-bold text-slate-600 transition-all duration-200 hover:text-[#B51748]"
+                >
+                  Català
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <h1 id="page-title" class="mt-2.5 text-2xl font-extrabold tracking-tight eoi-text-deep sm:text-3xl">
+            Programa de los cursos de nivel C2.2 — Año académico 2026-27 (INGLÉS)
+          </h1>
+          <p id="page-subtitle" class="mt-2 text-sm leading-relaxed text-slate-600">
+            Guía de referencia del segundo curso de Nivel Avanzado C2 con estructura desplegable para consultar los objetivos por actividad de lengua, evaluación y certificación.
+          </p>
+        </div>
+      </div>
+
+      <!-- Barra de controles de acordeón -->
+      <div class="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-slate-200/80 pt-4">
+        <div class="flex flex-wrap items-center gap-2.5">
+          <button
+            type="button"
+            onclick="expandAll()"
+            class="inline-flex items-center gap-2 rounded-xl eoi-bg-primary px-4 py-2 text-xs font-bold text-white shadow-xs transition active:scale-95 sm:text-sm"
+          >
+            <span>↕</span>
+            <span id="btn-expand-text">Expandir todo</span>
+          </button>
+          <button
+            type="button"
+            onclick="collapseAll()"
+            class="inline-flex items-center gap-2 rounded-xl border eoi-border-soft bg-white px-4 py-2 text-xs font-bold eoi-text-deep transition hover:bg-[#FBF3F6] active:scale-95 sm:text-sm"
+          >
+            <span>⤒</span>
+            <span id="btn-collapse-text">Contraer todo</span>
+          </button>
+        </div>
+        <p id="accordion-status" class="text-xs font-semibold eoi-text-primary">
+          Todas las secciones principales contraídas
+        </p>
+      </div>
+    </header>
+
+    <!-- Secciones desplegables del programa -->
+    <main id="sections-container" class="mt-6 space-y-3.5">
+      <!-- Renderizado dinámico según idioma -->
+    </main>
+
+  </div>
+
+  <!-- Pie institucional -->
+  <footer class="mx-auto w-full max-w-5xl px-4 pb-8 pt-2 sm:px-6 lg:px-8">
+    <div class="rounded-2xl border eoi-border-soft bg-white px-5 py-4 text-center text-xs text-slate-600 shadow-xs">
+      <p class="font-bold eoi-text-deep">Escola Oficial d'Idiomes · EOI Barcelona Drassanes</p>
+      <p class="mt-1">
+        Av. Drassanes, 14 · 08001 Barcelona · Tel. 93 324 93 30 · Fax 93 324 93 51 ·
+        <a href="https://www.eoibd.cat" target="_blank" rel="noopener noreferrer" class="font-semibold eoi-text-primary underline decoration-[#D49AA9] underline-offset-2 hover:opacity-80">www.eoibd.cat</a>
+      </p>
+    </div>
+  </footer>
+
+  <!-- Botón flotante permanente para volver arriba -->
+  <button
+    id="btn-volver-arriba"
+    type="button"
+    aria-label="Volver arriba"
+    onclick="window.scrollTo({ top: 0, behavior: 'smooth' })"
+    class="fixed bottom-5 right-5 z-50 translate-y-4 opacity-0 pointer-events-none flex items-center gap-1.5 rounded-full eoi-bg-primary px-4 py-2.5 text-sm font-bold text-white shadow-lg transition-all duration-300 hover:-translate-y-0.5 active:scale-95 focus:outline-none focus:ring-2 focus:ring-[#B51748]/40"
+  >
+    <span>↑</span>
+    <span id="btn-top-text">Arriba</span>
+  </button>
+
+  <script>
+    const COURSE_DATA = {"docTitle": {"es": "Programa de los cursos de nivel C2.2 — Año académico 2026-27 (INGLÉS)", "ca": "Programa del cursos de nivell C2.2 — Any acadèmic 2026-27 (ANGLÈS)"}, "title": {"es": "Programa de los cursos de nivel C2.2 — Año académico 2026-27 (INGLÉS)", "ca": "Programa del cursos de nivell C2.2 — Any acadèmic 2026-27 (ANGLÈS)"}, "subtitle": {"es": "Guía de referencia del segundo curso de Nivel Avanzado C2 con estructura desplegable para consultar los objetivos por actividad de lengua, evaluación y certificación.", "ca": "Guia de referència del segon curs de Nivell Avançat C2 amb estructura desplegable per consultar els objectius per activitat de llengua, avaluació i certificació."}, "sections": {"es": [{"title": "Objetivos del nivel C2.2", "html": "<div class=\"space-y-3 text-slate-700\">\n                  <p>El nivel C2 tiene como referencia las competencias propias del nivel C2 del Consejo de Europa, según se define este nivel en el <strong>Marco Común Europeo de Referencia</strong>, y tiene como finalidad principal capacitar al alumnado para el uso del idioma sin ningún tipo de dificultad, con un grado de calidad propio de un hablante culto, en situaciones de alta complejidad, en los ámbitos personal, público, profesional y educativo, receptiva y productivamente, tanto de forma hablada como escrita, presencialmente o a través de medios técnicos.</p>\n                  <p>Para lograr estos objetivos, el alumnado deberá adquirir las competencias, estrategias y contenidos necesarios que le permitan actuar como mediador entre textos y hablantes de una o más lenguas, así como interactuar, comprender y producir una amplia gama de textos orales y escritos extensos y complejos conceptual y lingüísticamente, que traten de temas tanto abstractos como concretos de carácter general o especializado, aunque no sean de su campo de especialización, en una gran variedad de acentos, registros y estilos, con un repertorio de estructuras variadas y complejas, y también de léxico que incluya expresiones idiomáticas, coloquiales, regionales o especializadas y que le permita percibir y expresar matices sutiles de significado.</p>\n                </div>"}, {"title": "Objetivos por actividad de lengua", "html": "<div class=\"grid grid-cols-1 gap-4 md:grid-cols-2\">\n                  <div class=\"rounded-xl border eoi-border-soft bg-[#FBF3F6]/70 p-4 \"><h3 class=\"mb-2.5 text-xs font-extrabold uppercase tracking-wider eoi-text-deep sm:text-sm\">Recepción</h3><p>Comprender sin dificultad e interpretar de forma crítica cualquier tipo de producción oral o escrita, independientemente del canal, sobre cualquier tema, incluso los ajenos a su experiencia, interés o campo de especialización, aunque presente rasgos estructurales o léxicos idiosincrásicos. Apreciar, con el uso esporádico del diccionario, distinciones sutiles de estilo y significado tanto implícito como explícito de textos escritos, aunque sean abstractos y extensos, estructuralmente complejos, literarios, técnicos o de otro tipo, contemporáneos o no contemporáneos. Comprender textos orales aunque haya ruido ambiental y/o la velocidad de habla sea rápida y natural, sea cual sea la variante geográfica o social, a condición de que el usuario de la lengua tenga tiempo de familiarizarse con ella.</p></div>\n                  <div class=\"rounded-xl border eoi-border-soft bg-[#FBF3F6]/70 p-4 \"><h3 class=\"mb-2.5 text-xs font-extrabold uppercase tracking-wider eoi-text-deep sm:text-sm\">Producción</h3><p>Producir y coproducir, con naturalidad, comodidad, desenvoltura y fluidez, textos orales y escritos de calidad, extensos, detallados, claros y fluidos, correctos formalmente, para comunicarse en cualquier tipo de situación de la vida personal, social, profesional y académica, adaptando con total eficacia el estilo y el registro a los diferentes contextos de uso, independientemente del soporte, e incluso a una velocidad rápida en tiempo real. Producir y coproducir textos escritos, exentos de errores salvo alguno de carácter tipográfico, sobre temas complejos incluso de tipo técnico, con un estilo apropiado y eficaz y una estructura lógica que ayude al lector a identificar y retener las ideas y los aspectos más significativos. Transmitir con precisión matices sutiles de significado, incluidos los usos alusivos del idioma. Producir textos orales sin errores salvo algún <em>lapsus linguae</em> ocasional mostrando una gran flexibilidad en el uso de un repertorio rico de expresiones, acentos y patrones de entonación que le permitan transmitir con precisión matices sutiles de significado.</p></div>\n                  <div class=\"rounded-xl border eoi-border-soft bg-[#FBF3F6]/70 p-4 \"><h3 class=\"mb-2.5 text-xs font-extrabold uppercase tracking-wider eoi-text-deep sm:text-sm\">Interacción</h3><p>Participar con espontaneidad, flexibilidad, fluidez y sin esfuerzo en todo tipo de conversaciones y discusiones, orales, escritas o multimodales, cara a cara o en línea. Comunicarse con fluidez y transmitir con precisión detalles y matices haciendo uso de un léxico rico y amplio, con expresiones idiomáticas y coloquialismos, escogiendo la expresión adecuada entre un repertorio disponible de funciones del discurso y utilizando un tono y un estilo apropiados. Formular ideas y opiniones de manera precisa en cualquier tipo de interacción, respetando los turnos de palabra, dando referencias y haciendo alusiones. Relacionar hábilmente la propia contribución al discurso con la de los demás interlocutores volviendo atrás y reestructurándolo de manera hábil cuando surja alguna dificultad.</p></div>\n                  <div class=\"rounded-xl border eoi-border-soft bg-[#FBF3F6]/70 p-4 \"><h3 class=\"mb-2.5 text-xs font-extrabold uppercase tracking-wider eoi-text-deep sm:text-sm\">Mediación</h3><p>Actuar como mediador de manera eficaz y natural entre hablantes de la lengua meta o de diferentes lenguas, en todo tipo de situaciones, orientando el desarrollo de las ideas, animando a los demás a elaborar su razonamiento, resumiendo, evaluando y vinculando las diversas contribuciones para llegar a un acuerdo y/o encontrar soluciones a posibles conflictos. Explicar sin dificultad el contenido de cualquier clase de texto oral o escrito, en un lenguaje claro, fluido y bien estructurado, explicando matices y la forma en que se presentan los hechos y los argumentos de manera precisa, señalando implicaciones socioculturales (por ejemplo, subestimación, ironía y sarcasmo), reconociendo significados implícitos, apreciando diferencias de estilo y adaptando con eficacia el estilo y el registro a los diferentes contextos de uso.</p></div>\n                </div>"}, {"title": "Evaluación y certificación del curso", "html": "<div class=\"space-y-5\">\n                  <div>\n                    <h3 class=\"text-sm font-extrabold eoi-text-deep mb-2\">Consideraciones generales</h3>\n                    <p class=\"text-slate-700\">El nivel C2.2 es el segundo de los dos cursos en que se organiza el Nivel Avanzado C2 en Cataluña. La evaluación de este nivel C2 se basará en la adquisición de las competencias descritas para el nivel, según constan en el <strong>DECRETO 45/2022, de 15 de marzo</strong>, por el que se establecen los currículos del nivel Básico (A1 y A2) y del nivel Avanzado (C1 y C2) de varios idiomas.</p>\n                  </div>\n                  <div>\n                    <h3 class=\"text-sm font-extrabold eoi-text-deep mb-2\">Criterios e instrumentos que se valorarán durante la evaluación continua</h3>\n                    <div class=\"space-y-2 text-slate-700\">\n                      <p>La adquisición de las competencias descritas para cada curso se evaluará mediante tareas orales o escritas basadas en situaciones reales de uso de la lengua.</p>\n                      <p>También se podrán utilizar otros instrumentos complementarios (como actividades de reflexión, pruebas breves o autoevaluaciones) para obtener una visión más completa del aprendizaje y garantizar que el progreso sea adecuado.</p>\n                      <p>Las rúbricas y criterios de evaluación de cada tarea se darán a conocer antes de cada evaluación.</p>\n                    </div>\n                  </div>\n                  <div class=\"rounded-xl border eoi-border-soft bg-[#FBF3F6]/70 p-4 \"><h3 class=\"mb-2.5 text-xs font-extrabold uppercase tracking-wider eoi-text-deep sm:text-sm\">Pruebas finales de certificación</h3><div class=\"space-y-2 text-slate-700\">\n                    <p>La superación del curso de nivel C2 está supeditada a la superación de las pruebas de certificación que se realizarán a final de curso.</p>\n                    <p>Las características y los criterios para la superación de esta prueba se rigen por el <strong>Real Decreto 1/2019, de 11 de enero</strong>, y son obligatorias para la obtención del certificado correspondiente al nivel.</p>\n                    <p>Las fechas de las pruebas escritas y orales de certificación se darán a conocer con la máxima antelación posible.</p>\n                  </div></div>\n                  <div class=\"rounded-xl border eoi-border-soft eoi-bg-soft p-4\"><h3 class=\"text-sm font-extrabold eoi-text-deep\">Calendario escolar</h3><p class=\"mt-1 text-slate-700\">Podéis consultar o imprimir el calendario escolar <a href=\"https://www.eoibd.cat/calendari-escolar\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"font-bold eoi-text-primary underline decoration-[#D49AA9] underline-offset-4 hover:opacity-80\">aquí</a>.</p></div>\n                  <div class=\"rounded-xl border border-amber-200 bg-amber-50/70 p-4\"><h3 class=\"text-sm font-extrabold text-amber-900 mb-2\">Observaciones importantes</h3><ol class=\"list-decimal space-y-2 pl-5 text-slate-700\"><li>Los departamentos pueden programar exámenes o pruebas de asistencia obligatoria en fechas posteriores al último día de clase.</li><li>En caso de necesidad y por causas debidamente justificadas, la Escuela podrá modificar la fecha de finalización de las clases.</li></ol></div>\n                </div>"}], "ca": [{"title": "Objectius del nivell C2.2", "html": "<div class=\"space-y-3 text-slate-700\">\n                  <p>El nivell C2 té com a referència les competències pròpies del nivell C2 del Consell d’Europa, segons es defineix aquest nivell en el <strong>Marc Europeu Comú de Referència</strong>, i té com a finalitat principal capacitar l’alumnat per a l’ús de l’idioma sense cap mena de dificultat, amb un grau de qualitat propi d’un parlant culte, en situacions d’alta complexitat, en els àmbits personal, públic, professional i educatiu, receptivament i productivament, tant de forma parlada com escrita, presencialment o a través de mitjans tècnics.</p>\n                  <p>Per aconseguir aquests objectius, l’alumnat haurà d’adquirir les competències, les estratègies i els continguts necessaris que li permetin actuar com a mediador entre textos i parlants d’una o més d’una llengua, així com interactuar, comprendre i produir una àmplia gamma de textos orals i escrits extensos i complexos conceptualment i lingüísticament, que tractin de temes tant abstractes com concrets de caràcter general o especialitzat, encara que no siguin del seu camp d’especialització, en una gran varietat d’accents, registres i estils, amb un repertori d’estructures variades, complexes, i també de lèxic que inclogui expressions idiomàtiques, col·loquials, regionals o especialitzades i que li permeti percebre i expressar matisos subtils de significat.</p>\n                </div>"}, {"title": "Objectius per activitat de llengua", "html": "<div class=\"grid grid-cols-1 gap-4 md:grid-cols-2\">\n                  <div class=\"rounded-xl border eoi-border-soft bg-[#FBF3F6]/70 p-4 \"><h3 class=\"mb-2.5 text-xs font-extrabold uppercase tracking-wider eoi-text-deep sm:text-sm\">Recepció</h3><p>Comprendre sense dificultat i interpretar de forma crítica qualsevol tipus de producció oral o escrita, independentment del canal, sobre qualsevol tema, fins i tot els aliens a la seva experiència, interès o camp d’especialització, encara que presenti trets estructurals o lèxics idiosincràtics. Apreciar, amb l’ús esporàdic del diccionari, distincions subtils d’estil i significat tant implícit com explícit de textos escrits, encara que siguin abstractes i extensos, estructuralment complexos, literaris, tècnics o d’un altre tipus, contemporanis o no contemporanis. Comprendre textos orals encara que hi hagi soroll ambiental i/o que la velocitat de parla sigui ràpida i natural, sigui quina sigui la variant geogràfica o social, a condició que l’usuari de la llengua tingui temps de familiaritzar-s’hi.</p></div>\n                  <div class=\"rounded-xl border eoi-border-soft bg-[#FBF3F6]/70 p-4 \"><h3 class=\"mb-2.5 text-xs font-extrabold uppercase tracking-wider eoi-text-deep sm:text-sm\">Producció</h3><p>Produir i coproduir, amb naturalitat, comoditat, desimboltura i fluïdesa, textos orals i escrits de qualitat, extensos, detallats, clars i fluids, correctes formalment, per comunicar-se en qualsevol tipus de situació de la vida personal, social, professional i acadèmica, adaptant amb una eficàcia total l’estil i el registre als diferents contextos d’ús, independentment del suport, i fins i tot a una velocitat ràpida en temps real. Produir i coproduir textos escrits, exempts d’errors llevat d’algun de caràcter tipogràfic, sobre temes complexos fins i tot de tipus tècnic, amb un estil apropiat i eficaç i una estructura lògica que ajudi el lector a identificar i retenir les idees i els aspectes més significatius. Transmetre amb precisió matisos subtils de significat, inclosos els usos al·lusius de l’idioma. Produir textos orals sense errors llevat d’algun <em>lapsus linguae</em> ocasional mostrant una gran flexibilitat en l’ús d’un repertori ric d’expressions, accents i patrons d’entonació que li permetin transmetre amb precisió matisos subtils de significat.</p></div>\n                  <div class=\"rounded-xl border eoi-border-soft bg-[#FBF3F6]/70 p-4 \"><h3 class=\"mb-2.5 text-xs font-extrabold uppercase tracking-wider eoi-text-deep sm:text-sm\">Interacció</h3><p>Participar amb espontaneïtat, flexibilitat, fluïdesa i sense esforç, en tota mena de converses i discussions, orals, escrites o multimodals, cara a cara o en línia. Comunicar-se amb fluïdesa i transmetre amb precisió detalls i matisos fent ús d’un lèxic ric i ampli, amb expressions idiomàtiques i col·loquialismes, escollint l’expressió adequada entre un repertori disponible de funcions del discurs i utilitzant un to i un estil apropiats. Formular idees i opinions de manera precisa en qualsevol tipus d’interacció, respectant els torns de paraula, donant referències i fent al·lusions. Relacionar hàbilment la pròpia contribució al discurs amb la dels altres interlocutors tornant enrere i reestructurant-lo d’una manera hàbil quan sorgeixi alguna dificultat.</p></div>\n                  <div class=\"rounded-xl border eoi-border-soft bg-[#FBF3F6]/70 p-4 \"><h3 class=\"mb-2.5 text-xs font-extrabold uppercase tracking-wider eoi-text-deep sm:text-sm\">Mediació</h3><p>Actuar com a mediador de manera eficaç i natural entre parlants de la llengua meta o de diferents llengües, en tot tipus de situacions, orientant el desenvolupament de les idees, animant els altres a elaborar el seu raonament, resumint, avaluant i vinculant les diverses contribucions per tal d’arribar a un acord i/o trobar solucions a possibles conflictes. Explicar sense dificultat el contingut de qualsevol classe de text oral o escrit, en un llenguatge clar, fluid i ben estructurat, explicant matisos i la forma en què es presenten els fets i els arguments de manera precisa, assenyalant implicacions socioculturals (per exemple, subestimació, ironia i sarcasme), reconeixent-hi significats implícits, apreciant-hi diferències d’estil i adaptant amb eficàcia l’estil i el registre als contextos d’ús diferents.</p></div>\n                </div>"}, {"title": "Avaluació i certificació del curs", "html": "<div class=\"space-y-5\">\n                  <div>\n                    <h3 class=\"text-sm font-extrabold eoi-text-deep mb-2\">Consideracions generals</h3>\n                    <p class=\"text-slate-700\">El nivell C2.2 és el segon dels dos cursos en què s’organitza el Nivell Avançat C2 a Catalunya. L’avaluació d’aquest nivell C2 es basarà en l’assoliment de les competències descrites per al nivell, segons consten al <strong>DECRET 45/2022, de 15 de març</strong>, pel qual s’estableixen els currículums del nivell Bàsic (A1 i A2) i del nivell Avançat (C1 i C2) de diversos idiomes.</p>\n                  </div>\n                  <div>\n                    <h3 class=\"text-sm font-extrabold eoi-text-deep mb-2\">Criteris i instruments que es valoraran durant l’avaluació contínua</h3>\n                    <div class=\"space-y-2 text-slate-700\">\n                      <p>L’assoliment de les competències descrites per a cada curs s’avaluaran per mitjà de tasques orals o escrites basades en situacions reals d’ús de la llengua.</p>\n                      <p>També es podran utilitzar altres instruments complementaris (com activitats de reflexió, proves breus o autoavaluacions) per obtenir una visió més completa de l’aprenentatge i garantir que el progrés sigui adequat.</p>\n                      <p>Les rúbriques i criteris d’avaluació de cada tasca es donaran a conèixer abans de cada avaluació.</p>\n                    </div>\n                  </div>\n                  <div class=\"rounded-xl border eoi-border-soft bg-[#FBF3F6]/70 p-4 \"><h3 class=\"mb-2.5 text-xs font-extrabold uppercase tracking-wider eoi-text-deep sm:text-sm\">Proves finals de certificació</h3><div class=\"space-y-2 text-slate-700\">\n                    <p>La superació del curs de nivell C2 està supeditada a la superació de les proves de certificació que es faran a final de curs.</p>\n                    <p>Les característiques i els criteris per a la superació d’aquesta prova es regeixen pel <strong>Reial decret 1/2019, d’11 de gener</strong>, i són obligatòries per a l’obtenció del certificat corresponent al nivell.</p>\n                    <p>Les dates de les proves escrites i orals de certificació se donaran a conèixer amb la màxima antelació possible.</p>\n                  </div></div>\n                  <div class=\"rounded-xl border eoi-border-soft eoi-bg-soft p-4\"><h3 class=\"text-sm font-extrabold eoi-text-deep\">Calendari escolar</h3><p class=\"mt-1 text-slate-700\">Podeu consultar o imprimir el calendari escolar <a href=\"https://www.eoibd.cat/calendari-escolar\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"font-bold eoi-text-primary underline decoration-[#D49AA9] underline-offset-4 hover:opacity-80\">aquí</a>.</p></div>\n                  <div class=\"rounded-xl border border-amber-200 bg-amber-50/70 p-4\"><h3 class=\"text-sm font-extrabold text-amber-900 mb-2\">Observacions importants</h3><ol class=\"list-decimal space-y-2 pl-5 text-slate-700\"><li>Els departaments poden programar exàmens o proves d’assistència obligatòria en dates posteriors a l’últim dia de classe.</li><li>En cas de necessitat i per causes degudament justificades, l’Escola podrà modificar la data de finalització de les classes.</li></ol></div>\n                </div>"}]}};
+
+    const UI_STRINGS = {
+      es: {
+        backLink: "Guías de los cursos",
+        expandAll: "Expandir todo",
+        collapseAll: "Contraer todo",
+        btnTop: "Arriba",
+        allCollapsed: "Todas las secciones principales contraídas",
+        allExpanded: "Todas las secciones desplegadas",
+        partialExpanded: (open, total) => `${open} de ${total} secciones desplegadas`
+      },
+      ca: {
+        backLink: "Guies dels cursos",
+        expandAll: "Desplega-ho tot",
+        collapseAll: "Contreu-ho tot",
+        btnTop: "Amunt",
+        allCollapsed: "Totes les seccions principals contretes",
+        allExpanded: "Totes les seccions desplegades",
+        partialExpanded: (open, total) => `${open} de ${total} seccions desplegades`
+      }
+    };
+
+    let currentLang = "es";
+    try {
+      const saved = localStorage.getItem("eoi_ui_lang");
+      if (saved === "es" || saved === "ca") currentLang = saved;
+    } catch (e) {}
+
+    const openState = new Set();
+
+    function renderSections() {
+      const container = document.getElementById("sections-container");
+      const sections = COURSE_DATA.sections[currentLang];
+      container.innerHTML = sections
+        .map((sec, idx) => {
+          const num = idx + 1;
+          const id = `sec-${num}`;
+          const isOpen = openState.has(id);
+          return `
+            <section id="${id}" data-accordion-item data-main-section style="animation-delay: ${Math.min(idx * 45, 250)}ms" class="animate-enter rounded-2xl border eoi-border-soft bg-white shadow-xs overflow-hidden transition-shadow duration-200 hover:shadow-md ${isOpen ? "is-open" : ""}">
+              <button
+                type="button"
+                aria-expanded="${isOpen}"
+                onclick="toggleAccordion('${id}')"
+                class="flex w-full items-center justify-between gap-4 px-5 py-4 text-left transition-colors duration-200 hover:bg-[#FBF3F6] sm:px-6"
+              >
+                <div class="flex items-center gap-3.5">
+                  <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg eoi-bg-primary text-sm font-extrabold text-white">
+                    ${num}
+                  </span>
+                  <h2 class="text-base font-extrabold tracking-tight text-slate-900 sm:text-lg">
+                    ${sec.title}
+                  </h2>
+                </div>
+                <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#F7ECEF] eoi-text-primary">
+                  <svg class="chevron-icon h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </span>
+              </button>
+              <div id="${id}-body" class="accordion-collapse ${isOpen ? "is-expanded" : ""}">
+                <div class="accordion-inner">
+                  <div class="border-t border-slate-200/80 px-5 py-5 text-sm leading-relaxed text-slate-700 sm:px-6">
+                    ${sec.html}
+                  </div>
+                </div>
+              </div>
+            </section>
+          `;
+        })
+        .join("");
+
+      openState.forEach((id) => {
+        if (id.startsWith("sub-")) {
+          const item = document.getElementById(id);
+          const body = document.getElementById(id + "-body");
+          const btn = item ? item.querySelector(":scope > button") : null;
+          if (item && body && btn) {
+            item.classList.add("is-open");
+            body.classList.add("is-expanded");
+            btn.setAttribute("aria-expanded", "true");
+          }
+        }
+      });
+
+      updateStatus();
+    }
+
+    function setUILang(lang) {
+      currentLang = lang;
+      try {
+        localStorage.setItem("eoi_ui_lang", lang);
+      } catch (e) {}
+
+      const ui = UI_STRINGS[lang];
+      document.documentElement.lang = lang;
+      document.title = COURSE_DATA.docTitle[lang];
+
+      const btnEs = document.getElementById("lang-btn-es");
+      const btnCa = document.getElementById("lang-btn-ca");
+      if (lang === "es") {
+        btnEs.className = "rounded-full px-3 py-1 text-xs font-bold transition-all duration-200 eoi-bg-primary text-white shadow-xs";
+        btnCa.className = "rounded-full px-3 py-1 text-xs font-bold text-slate-600 transition-all duration-200 hover:text-[#B51748]";
+      } else {
+        btnCa.className = "rounded-full px-3 py-1 text-xs font-bold transition-all duration-200 eoi-bg-primary text-white shadow-xs";
+        btnEs.className = "rounded-full px-3 py-1 text-xs font-bold text-slate-600 transition-all duration-200 hover:text-[#B51748]";
+      }
+
+      document.getElementById("back-link-text").textContent = ui.backLink;
+      document.getElementById("page-title").textContent = COURSE_DATA.title[lang];
+      document.getElementById("page-subtitle").textContent = COURSE_DATA.subtitle[lang];
+      document.getElementById("btn-expand-text").textContent = ui.expandAll;
+      document.getElementById("btn-collapse-text").textContent = ui.collapseAll;
+      document.getElementById("btn-top-text").textContent = ui.btnTop;
+
+      renderSections();
+    }
+
+    function updateStatus() {
+      const ui = UI_STRINGS[currentLang];
+      const mains = document.querySelectorAll("[data-main-section]");
+      let openCount = 0;
+      mains.forEach((el) => {
+        if (el.classList.contains("is-open")) openCount++;
+      });
+      const status = document.getElementById("accordion-status");
+      if (!status) return;
+      if (openCount === 0) {
+        status.textContent = ui.allCollapsed;
+      } else if (openCount === mains.length) {
+        status.textContent = ui.allExpanded;
+      } else {
+        status.textContent = ui.partialExpanded(openCount, mains.length);
+      }
+    }
+
+    function toggleAccordion(id) {
+      const item = document.getElementById(id);
+      if (!item) return;
+      const body = document.getElementById(id + "-body");
+      const btn = item.querySelector(":scope > button");
+      const isOpen = item.classList.contains("is-open");
+      if (isOpen) {
+        item.classList.remove("is-open");
+        if (body) body.classList.remove("is-expanded");
+        if (btn) btn.setAttribute("aria-expanded", "false");
+        openState.delete(id);
+      } else {
+        item.classList.add("is-open");
+        if (body) body.classList.add("is-expanded");
+        if (btn) btn.setAttribute("aria-expanded", "true");
+        openState.add(id);
+      }
+      updateStatus();
+    }
+
+    function expandAll() {
+      document.querySelectorAll("[data-accordion-item]").forEach((item) => {
+        item.classList.add("is-open");
+        const body = document.getElementById(item.id + "-body");
+        const btn = item.querySelector(":scope > button");
+        if (body) body.classList.add("is-expanded");
+        if (btn) btn.setAttribute("aria-expanded", "true");
+        openState.add(item.id);
+      });
+      updateStatus();
+    }
+
+    function collapseAll() {
+      document.querySelectorAll("[data-accordion-item]").forEach((item) => {
+        item.classList.remove("is-open");
+        const body = document.getElementById(item.id + "-body");
+        const btn = item.querySelector(":scope > button");
+        if (body) body.classList.remove("is-expanded");
+        if (btn) btn.setAttribute("aria-expanded", "false");
+      });
+      openState.clear();
+      updateStatus();
+    }
+
+    (function () {
+      const btn = document.getElementById("btn-volver-arriba");
+      if (!btn) return;
+      window.addEventListener("scroll", function () {
+        if (window.scrollY > 240) {
+          btn.classList.remove("translate-y-4", "opacity-0", "pointer-events-none");
+          btn.classList.add("translate-y-0", "opacity-100");
+        } else {
+          btn.classList.add("translate-y-4", "opacity-0", "pointer-events-none");
+          btn.classList.remove("translate-y-0", "opacity-100");
+        }
+      }, { passive: true });
+    })();
+
+    setUILang(currentLang);
+  </script>
+</body>
+</html>
