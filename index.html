@@ -28,12 +28,77 @@
     .eoi-border-soft { border-color: var(--eoi-magenta-border); }
     .eoi-bg-soft { background-color: var(--eoi-magenta-soft); }
 
+    /* Rotación suave de flechas */
     .chevron-icon {
-      transition: transform 0.22s ease;
+      transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
     }
     .is-open > button .chevron-icon,
     .is-open .main-chevron {
       transform: rotate(180deg);
+    }
+
+    /* Acordeón fluido basado en CSS Grid (sin cortes bruscos) */
+    .accordion-collapse {
+      display: grid;
+      grid-template-rows: 0fr;
+      opacity: 0;
+      transition:
+        grid-template-rows 0.34s cubic-bezier(0.22, 1, 0.36, 1),
+        opacity 0.24s ease;
+    }
+    .accordion-collapse.giant-collapse {
+      transition:
+        grid-template-rows 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+        opacity 0.28s ease;
+    }
+    .accordion-collapse.is-expanded {
+      grid-template-rows: 1fr;
+      opacity: 1;
+    }
+    .accordion-inner {
+      overflow: hidden;
+    }
+
+    /* Animación de entrada inicial y cascada suave al abrir bloques */
+    @keyframes fadeSlideUp {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .animate-enter {
+      animation: fadeSlideUp 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+    .animate-enter-delay-1 {
+      animation-delay: 0.07s;
+    }
+    .animate-enter-delay-2 {
+      animation-delay: 0.14s;
+    }
+
+    .card-stagger {
+      animation: fadeSlideUp 0.32s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+
+    /* Micro-interacción sutil en botones de nivel */
+    .level-pill {
+      transition:
+        transform 0.18s cubic-bezier(0.22, 1, 0.36, 1),
+        background-color 0.18s ease,
+        border-color 0.18s ease,
+        color 0.18s ease,
+        box-shadow 0.18s ease;
+    }
+    .level-pill:hover {
+      transform: translateY(-1px);
+    }
+    .level-pill:active {
+      transform: scale(0.98);
     }
 
     mark.search-hl {
@@ -43,6 +108,14 @@
       border-radius: 4px;
       font-weight: 600;
     }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
   </style>
 </head>
 <body class="min-h-screen flex flex-col">
@@ -50,7 +123,7 @@
   <div class="mx-auto w-full max-w-5xl flex-1 px-4 py-6 sm:px-6 lg:px-8">
 
     <!-- Cabecera institucional EOI Barcelona Drassanes -->
-    <header class="rounded-2xl border eoi-border-soft bg-white p-5 shadow-sm sm:p-7">
+    <header class="animate-enter rounded-2xl border eoi-border-soft bg-white p-5 shadow-sm sm:p-7">
       <div class="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
 
         <!-- Logotipo oficial -->
@@ -83,7 +156,7 @@
                 type="button"
                 id="lang-btn-es"
                 onclick="setUILang('es')"
-                class="rounded-full px-3 py-1 text-xs font-bold transition eoi-bg-primary text-white shadow-xs"
+                class="rounded-full px-3 py-1 text-xs font-bold transition-all duration-200 eoi-bg-primary text-white shadow-xs"
               >
                 Castellano
               </button>
@@ -91,7 +164,7 @@
                 type="button"
                 id="lang-btn-ca"
                 onclick="setUILang('ca')"
-                class="rounded-full px-3 py-1 text-xs font-bold text-slate-600 transition hover:text-[#B51748]"
+                class="rounded-full px-3 py-1 text-xs font-bold text-slate-600 transition-all duration-200 hover:text-[#B51748]"
               >
                 Català
               </button>
@@ -124,13 +197,13 @@
             autocomplete="off"
             placeholder="Escribe un idioma, código ID (DE, EN, ES, AR, JA...) o nivel..."
             oninput="handleSearch(this.value)"
-            class="w-full rounded-xl border-2 eoi-border-soft bg-white py-3 pl-12 pr-24 text-sm font-medium text-slate-800 placeholder-slate-400 transition focus:border-[#B51748] focus:outline-none focus:ring-2 focus:ring-[#B51748]/20"
+            class="w-full rounded-xl border-2 eoi-border-soft bg-white py-3 pl-12 pr-24 text-sm font-medium text-slate-800 placeholder-slate-400 transition-all duration-200 focus:border-[#B51748] focus:outline-none focus:ring-2 focus:ring-[#B51748]/20"
           />
           <button
             id="clear-search-btn"
             type="button"
             onclick="clearSearch()"
-            class="hidden absolute right-3 rounded-lg bg-[#F5E1E7] px-2.5 py-1 text-xs font-bold text-[#8F1138] transition hover:bg-[#ECCCD6]"
+            class="hidden absolute right-3 rounded-lg bg-[#F5E1E7] px-2.5 py-1 text-xs font-bold text-[#8F1138] transition hover:bg-[#ECCCD6] active:scale-95"
           >
             Limpiar
           </button>
@@ -145,25 +218,25 @@
     </header>
 
     <!-- Mensaje cuando no hay resultados -->
-    <div id="no-results" class="hidden mt-6 rounded-2xl border eoi-border-soft bg-white p-8 text-center shadow-sm">
+    <div id="no-results" class="hidden card-stagger mt-6 rounded-2xl border eoi-border-soft bg-white p-8 text-center shadow-sm">
       <p id="no-results-title" class="text-base font-bold eoi-text-deep">No se han encontrado coincidencias</p>
       <p id="no-results-desc" class="mt-1 text-sm text-slate-600">Prueba con otro nombre de idioma, nivel (ej. A1, B2.2) o código ID (ej. EN, FR, TR).</p>
-      <button type="button" onclick="clearSearch()" id="no-results-btn" class="mt-4 rounded-xl eoi-bg-primary px-4 py-2 text-xs font-bold text-white transition">
+      <button type="button" onclick="clearSearch()" id="no-results-btn" class="mt-4 rounded-xl eoi-bg-primary px-4 py-2 text-xs font-bold text-white transition active:scale-95">
         Mostrar todo
       </button>
     </div>
 
     <!-- BLOQUE GIGANTE 1: IDIOMAS -->
-    <section id="section-idiomas" class="mt-6 rounded-2xl border-2 eoi-border-soft bg-white shadow-sm overflow-hidden">
+    <section id="section-idiomas" class="animate-enter animate-enter-delay-1 mt-6 rounded-2xl border-2 eoi-border-soft bg-white shadow-sm overflow-hidden transition-shadow duration-300 hover:shadow-md">
       <button
         type="button"
         id="toggle-idiomas-btn"
         aria-expanded="false"
         onclick="toggleGiantSection('idiomas')"
-        class="flex w-full items-center justify-between gap-4 bg-white px-5 py-5 text-left transition hover:bg-[#FBF3F6] sm:px-7 sm:py-6"
+        class="group flex w-full items-center justify-between gap-4 bg-white px-5 py-5 text-left transition-colors duration-200 hover:bg-[#FBF3F6] active:bg-[#F7E9EE] sm:px-7 sm:py-6"
       >
         <div class="flex items-center gap-4">
-          <span class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl eoi-bg-primary text-white shadow-xs">
+          <span class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl eoi-bg-primary text-white shadow-xs transition-transform duration-200 group-hover:scale-105">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129" />
             </svg>
@@ -183,32 +256,36 @@
           </div>
         </div>
 
-        <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full eoi-bg-soft eoi-text-primary">
+        <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full eoi-bg-soft eoi-text-primary transition-colors duration-200 group-hover:bg-[#F4DFE6]">
           <svg class="main-chevron chevron-icon h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
             <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
           </svg>
         </span>
       </button>
 
-      <!-- Contenedor desplegable de los 15 idiomas (items-start evita que se estire el recuadro vecino) -->
-      <div id="body-idiomas" class="hidden border-t border-slate-200/80 bg-[#F9F6F7] p-4 sm:p-6">
-        <div id="idiomas-grid" class="grid grid-cols-1 items-start gap-3 md:grid-cols-2">
-          <!-- Renderizado dinámico por JS -->
+      <!-- Contenedor desplegable animado de los 15 idiomas -->
+      <div id="body-idiomas" class="accordion-collapse giant-collapse">
+        <div class="accordion-inner">
+          <div class="border-t border-slate-200/80 bg-[#F9F6F7] p-4 sm:p-6">
+            <div id="idiomas-grid" class="grid grid-cols-1 items-start gap-3 md:grid-cols-2">
+              <!-- Renderizado dinámico por JS -->
+            </div>
+          </div>
         </div>
       </div>
     </section>
 
     <!-- BLOQUE GIGANTE 2: OFERTA ESPECÍFICA -->
-    <section id="section-oferta" class="mt-5 rounded-2xl border-2 eoi-border-soft bg-white shadow-sm overflow-hidden">
+    <section id="section-oferta" class="animate-enter animate-enter-delay-2 mt-5 rounded-2xl border-2 eoi-border-soft bg-white shadow-sm overflow-hidden transition-shadow duration-300 hover:shadow-md">
       <button
         type="button"
         id="toggle-oferta-btn"
         aria-expanded="false"
         onclick="toggleGiantSection('oferta')"
-        class="flex w-full items-center justify-between gap-4 bg-white px-5 py-5 text-left transition hover:bg-[#FBF3F6] sm:px-7 sm:py-6"
+        class="group flex w-full items-center justify-between gap-4 bg-white px-5 py-5 text-left transition-colors duration-200 hover:bg-[#FBF3F6] active:bg-[#F7E9EE] sm:px-7 sm:py-6"
       >
         <div class="flex items-center gap-4">
-          <span class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border-2 eoi-border-primary bg-white eoi-text-primary shadow-xs">
+          <span class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border-2 eoi-border-primary bg-white eoi-text-primary shadow-xs transition-transform duration-200 group-hover:scale-105">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
             </svg>
@@ -228,20 +305,24 @@
           </div>
         </div>
 
-        <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full eoi-bg-soft eoi-text-primary">
+        <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full eoi-bg-soft eoi-text-primary transition-colors duration-200 group-hover:bg-[#F4DFE6]">
           <svg class="main-chevron chevron-icon h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
             <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
           </svg>
         </span>
       </button>
 
-      <!-- Contenedor desplegable de Oferta específica -->
-      <div id="body-oferta" class="hidden border-t border-slate-200/80 bg-[#F9F6F7] p-4 sm:p-6">
-        <div id="oferta-note" class="mb-4 rounded-xl border eoi-border-soft bg-white px-4 py-3 text-xs leading-relaxed text-slate-600 sm:text-sm">
-          Estos idiomas forman parte de la <strong>Oferta específica</strong> y no disponen de un programa de curso curricular independiente; aquí puedes consultar sus grupos, horarios, fechas y profesorado.
-        </div>
-        <div id="oferta-list" class="space-y-3">
-          <!-- Renderizado dinámico por JS -->
+      <!-- Contenedor desplegable animado de Oferta específica -->
+      <div id="body-oferta" class="accordion-collapse giant-collapse">
+        <div class="accordion-inner">
+          <div class="border-t border-slate-200/80 bg-[#F9F6F7] p-4 sm:p-6">
+            <div id="oferta-note" class="mb-4 rounded-xl border eoi-border-soft bg-white px-4 py-3 text-xs leading-relaxed text-slate-600 sm:text-sm">
+              Estos idiomas forman parte de la <strong>Oferta específica</strong> y no disponen de un programa de curso curricular independiente; aquí puedes consultar sus grupos, horarios, fechas y profesorado.
+            </div>
+            <div id="oferta-list" class="space-y-3">
+              <!-- Renderizado dinámico por JS -->
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -265,7 +346,7 @@
     type="button"
     aria-label="Volver arriba"
     onclick="window.scrollTo({ top: 0, behavior: 'smooth' })"
-    class="fixed bottom-5 right-5 z-50 hidden items-center gap-1.5 rounded-full eoi-bg-primary px-4 py-2.5 text-sm font-bold text-white shadow-lg transition focus:outline-none focus:ring-2 focus:ring-[#B51748]/40"
+    class="fixed bottom-5 right-5 z-50 translate-y-4 opacity-0 pointer-events-none flex items-center gap-1.5 rounded-full eoi-bg-primary px-4 py-2.5 text-sm font-bold text-white shadow-lg transition-all duration-300 hover:-translate-y-0.5 active:scale-95 focus:outline-none focus:ring-2 focus:ring-[#B51748]/40"
   >
     <span>↑</span>
     <span id="btn-top-text">Arriba</span>
@@ -657,11 +738,11 @@
       const btnEs = document.getElementById("lang-btn-es");
       const btnCa = document.getElementById("lang-btn-ca");
       if (lang === "es") {
-        btnEs.className = "rounded-full px-3 py-1 text-xs font-bold transition eoi-bg-primary text-white shadow-xs";
-        btnCa.className = "rounded-full px-3 py-1 text-xs font-bold text-slate-600 transition hover:text-[#B51748]";
+        btnEs.className = "rounded-full px-3 py-1 text-xs font-bold transition-all duration-200 eoi-bg-primary text-white shadow-xs";
+        btnCa.className = "rounded-full px-3 py-1 text-xs font-bold text-slate-600 transition-all duration-200 hover:text-[#B51748]";
       } else {
-        btnCa.className = "rounded-full px-3 py-1 text-xs font-bold transition eoi-bg-primary text-white shadow-xs";
-        btnEs.className = "rounded-full px-3 py-1 text-xs font-bold text-slate-600 transition hover:text-[#B51748]";
+        btnCa.className = "rounded-full px-3 py-1 text-xs font-bold transition-all duration-200 eoi-bg-primary text-white shadow-xs";
+        btnEs.className = "rounded-full px-3 py-1 text-xs font-bold text-slate-600 transition-all duration-200 hover:text-[#B51748]";
       }
 
       document.getElementById("page-title").textContent = t.pageTitle;
@@ -681,45 +762,94 @@
       document.getElementById("no-results-desc").textContent = t.noResultsDesc;
       document.getElementById("no-results-btn").textContent = t.noResultsBtn;
 
-      renderAll();
+      renderAll(false);
     }
 
     function toggleGiantSection(key) {
       giantOpen[key] = !giantOpen[key];
-      syncGiantSectionUI(key);
+      syncGiantSectionUI(key, true);
     }
 
-    function syncGiantSectionUI(key) {
+    function syncGiantSectionUI(key, animateChildren = false) {
       const section = document.getElementById(`section-${key}`);
       const body = document.getElementById(`body-${key}`);
       const btn = document.getElementById(`toggle-${key}-btn`);
       if (giantOpen[key]) {
         section.classList.add("is-open");
-        body.classList.remove("hidden");
+        body.classList.add("is-expanded");
         btn.setAttribute("aria-expanded", "true");
+        if (animateChildren) {
+          const cards = body.querySelectorAll("[data-stagger-card]");
+          cards.forEach((card, idx) => {
+            card.classList.remove("card-stagger");
+            card.style.animationDelay = `${Math.min(idx * 22, 260)}ms`;
+            void card.offsetWidth;
+            card.classList.add("card-stagger");
+          });
+        }
       } else {
         section.classList.remove("is-open");
-        body.classList.add("hidden");
+        body.classList.remove("is-expanded");
         btn.setAttribute("aria-expanded", "false");
       }
     }
 
     function toggleLangCard(id) {
-      if (openLanguages.has(id)) {
-        openLanguages.delete(id);
-      } else {
+      const willOpen = !openLanguages.has(id);
+      if (willOpen) {
         openLanguages.add(id);
+      } else {
+        openLanguages.delete(id);
       }
-      renderIdiomas();
+
+      const card = document.getElementById(`lang-card-${id}`);
+      const collapse = document.getElementById(`lang-collapse-${id}`);
+      const btn = card ? card.querySelector(":scope > button") : null;
+
+      if (card && collapse && btn) {
+        if (willOpen) {
+          card.classList.add("is-open", "border-[#B51748]", "shadow-sm");
+          card.classList.remove("eoi-border-soft");
+          collapse.classList.add("is-expanded");
+          btn.setAttribute("aria-expanded", "true");
+        } else {
+          card.classList.remove("is-open", "border-[#B51748]", "shadow-sm");
+          card.classList.add("eoi-border-soft");
+          collapse.classList.remove("is-expanded");
+          btn.setAttribute("aria-expanded", "false");
+        }
+      } else {
+        renderIdiomas(false);
+      }
     }
 
     function toggleOfertaCard(id) {
-      if (openOferta.has(id)) {
-        openOferta.delete(id);
-      } else {
+      const willOpen = !openOferta.has(id);
+      if (willOpen) {
         openOferta.add(id);
+      } else {
+        openOferta.delete(id);
       }
-      renderOferta();
+
+      const card = document.getElementById(`oferta-card-${id}`);
+      const collapse = document.getElementById(`oferta-collapse-${id}`);
+      const btn = card ? card.querySelector(":scope > button") : null;
+
+      if (card && collapse && btn) {
+        if (willOpen) {
+          card.classList.add("is-open", "border-[#B51748]", "shadow-sm");
+          card.classList.remove("eoi-border-soft");
+          collapse.classList.add("is-expanded");
+          btn.setAttribute("aria-expanded", "true");
+        } else {
+          card.classList.remove("is-open", "border-[#B51748]", "shadow-sm");
+          card.classList.add("eoi-border-soft");
+          collapse.classList.remove("is-expanded");
+          btn.setAttribute("aria-expanded", "false");
+        }
+      } else {
+        renderOferta(false);
+      }
     }
 
     function handleSearch(val) {
@@ -730,7 +860,7 @@
       } else {
         clearBtn.classList.add("hidden");
       }
-      renderAll();
+      renderAll(true);
     }
 
     function clearSearch() {
@@ -742,12 +872,12 @@
       openOferta.clear();
       giantOpen.idiomas = false;
       giantOpen.oferta = false;
-      syncGiantSectionUI("idiomas");
-      syncGiantSectionUI("oferta");
-      renderAll();
+      syncGiantSectionUI("idiomas", false);
+      syncGiantSectionUI("oferta", false);
+      renderAll(false);
     }
 
-    function renderIdiomas() {
+    function renderIdiomas(stagger = false) {
       const t = I18N[currentLang];
       const q = normalizeText(searchQuery);
       const grid = document.getElementById("idiomas-grid");
@@ -781,14 +911,20 @@
           return;
         }
 
+        const idx = matchedCount;
         matchedCount++;
         const isExpanded = q ? true : openLanguages.has(lang.id);
 
         const card = document.createElement("div");
-        card.className = `rounded-xl border transition ${
+        card.id = `lang-card-${lang.id}`;
+        card.setAttribute("data-stagger-card", "true");
+        if (stagger) {
+          card.style.animationDelay = `${Math.min(idx * 22, 260)}ms`;
+        }
+        card.className = `${stagger ? "card-stagger " : ""}rounded-xl border bg-white transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md ${
           isExpanded
-            ? "border-[#B51748] bg-white shadow-sm is-open"
-            : "eoi-border-soft bg-white hover:border-[#C97B93]"
+            ? "border-[#B51748] shadow-sm is-open"
+            : "eoi-border-soft hover:border-[#C97B93]"
         }`;
 
         const levelsHtml = matchingLevels
@@ -800,13 +936,13 @@
             return `
               <a
                 href="${href}"
-                class="group flex items-center justify-between rounded-lg border eoi-border-soft bg-[#FBF3F6] px-3.5 py-2.5 text-sm font-bold eoi-text-deep transition hover:border-[#B51748] hover:bg-[#B51748] hover:text-white"
+                class="level-pill group flex items-center justify-between rounded-lg border eoi-border-soft bg-[#FBF3F6] px-3.5 py-2.5 text-sm font-bold eoi-text-deep hover:border-[#B51748] hover:bg-[#B51748] hover:text-white hover:shadow-xs"
               >
                 <span class="flex items-center">
                   <span>${lvl.label}</span>
                   ${publishedBadge}
                 </span>
-                <span class="text-xs font-semibold opacity-75 group-hover:opacity-100">→</span>
+                <span class="text-xs font-semibold opacity-75 transition-transform duration-200 group-hover:translate-x-1 group-hover:opacity-100">→</span>
               </a>
             `;
           })
@@ -834,10 +970,14 @@
               </svg>
             </span>
           </button>
-          <div class="${isExpanded ? "" : "hidden"} border-t border-slate-200/80 px-4 pb-4 pt-3">
-            <p class="mb-2.5 text-xs font-medium text-slate-500">${t.openProgramHint}</p>
-            <div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
-              ${levelsHtml}
+          <div id="lang-collapse-${lang.id}" class="accordion-collapse ${isExpanded ? "is-expanded" : ""}">
+            <div class="accordion-inner">
+              <div class="border-t border-slate-200/80 px-4 pb-4 pt-3">
+                <p class="mb-2.5 text-xs font-medium text-slate-500">${t.openProgramHint}</p>
+                <div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                  ${levelsHtml}
+                </div>
+              </div>
             </div>
           </div>
         `;
@@ -848,7 +988,7 @@
       return matchedCount;
     }
 
-    function renderOferta() {
+    function renderOferta(stagger = false) {
       const t = I18N[currentLang];
       const q = normalizeText(searchQuery);
       const list = document.getElementById("oferta-list");
@@ -884,6 +1024,7 @@
           return;
         }
 
+        const idx = matchedCount;
         matchedCount++;
         const isExpanded = q ? true : openOferta.has(item.id);
 
@@ -902,7 +1043,7 @@
               : `<span class="text-slate-400 italic">—</span>`;
 
             return `
-              <tr class="border-t border-slate-200/70 hover:bg-[#FBF3F6]">
+              <tr class="border-t border-slate-200/70 transition-colors hover:bg-[#FBF3F6]">
                 <td class="whitespace-nowrap px-3.5 py-2.5 font-extrabold eoi-text-deep">${g.level}</td>
                 <td class="px-3.5 py-2.5 text-slate-700">${schedCell}</td>
                 <td class="px-3.5 py-2.5 text-slate-700">${datesCell}</td>
@@ -913,10 +1054,15 @@
           .join("");
 
         const card = document.createElement("div");
-        card.className = `rounded-xl border transition ${
+        card.id = `oferta-card-${item.id}`;
+        card.setAttribute("data-stagger-card", "true");
+        if (stagger) {
+          card.style.animationDelay = `${Math.min(idx * 25, 250)}ms`;
+        }
+        card.className = `${stagger ? "card-stagger " : ""}rounded-xl border bg-white transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md ${
           isExpanded
-            ? "border-[#B51748] bg-white shadow-sm is-open"
-            : "eoi-border-soft bg-white hover:border-[#C97B93]"
+            ? "border-[#B51748] shadow-sm is-open"
+            : "eoi-border-soft hover:border-[#C97B93]"
         }`;
 
         card.innerHTML = `
@@ -941,21 +1087,25 @@
               </svg>
             </span>
           </button>
-          <div class="${isExpanded ? "" : "hidden"} border-t border-slate-200/80 p-3 sm:p-4">
-            <div class="overflow-x-auto rounded-lg border eoi-border-soft">
-              <table class="w-full text-left text-xs sm:text-sm">
-                <thead class="eoi-bg-primary text-white">
-                  <tr>
-                    <th class="px-3.5 py-2.5 font-bold">${t.colLevel}</th>
-                    <th class="px-3.5 py-2.5 font-bold">${t.colSchedule}</th>
-                    <th class="px-3.5 py-2.5 font-bold">${t.colDates}</th>
-                    <th class="px-3.5 py-2.5 font-bold">${t.colTeacher}</th>
-                  </tr>
-                </thead>
-                <tbody class="bg-white divide-y divide-slate-200/70">
-                  ${rowsHtml}
-                </tbody>
-              </table>
+          <div id="oferta-collapse-${item.id}" class="accordion-collapse ${isExpanded ? "is-expanded" : ""}">
+            <div class="accordion-inner">
+              <div class="border-t border-slate-200/80 p-3 sm:p-4">
+                <div class="overflow-x-auto rounded-lg border eoi-border-soft">
+                  <table class="w-full text-left text-xs sm:text-sm">
+                    <thead class="eoi-bg-primary text-white">
+                      <tr>
+                        <th class="px-3.5 py-2.5 font-bold">${t.colLevel}</th>
+                        <th class="px-3.5 py-2.5 font-bold">${t.colSchedule}</th>
+                        <th class="px-3.5 py-2.5 font-bold">${t.colDates}</th>
+                        <th class="px-3.5 py-2.5 font-bold">${t.colTeacher}</th>
+                      </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-slate-200/70">
+                      ${rowsHtml}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
             </div>
           </div>
         `;
@@ -966,11 +1116,11 @@
       return matchedCount;
     }
 
-    function renderAll() {
+    function renderAll(stagger = false) {
       const t = I18N[currentLang];
       const q = normalizeText(searchQuery);
-      const idiomasMatches = renderIdiomas();
-      const ofertaMatches = renderOferta();
+      const idiomasMatches = renderIdiomas(stagger);
+      const ofertaMatches = renderOferta(stagger);
 
       const secIdiomas = document.getElementById("section-idiomas");
       const secOferta = document.getElementById("section-oferta");
@@ -984,7 +1134,7 @@
         if (idiomasMatches > 0) {
           secIdiomas.classList.remove("hidden");
           giantOpen.idiomas = true;
-          syncGiantSectionUI("idiomas");
+          syncGiantSectionUI("idiomas", false);
         } else {
           secIdiomas.classList.add("hidden");
         }
@@ -992,7 +1142,7 @@
         if (ofertaMatches > 0) {
           secOferta.classList.remove("hidden");
           giantOpen.oferta = true;
-          syncGiantSectionUI("oferta");
+          syncGiantSectionUI("oferta", false);
         } else {
           secOferta.classList.add("hidden");
         }
@@ -1007,22 +1157,22 @@
         secIdiomas.classList.remove("hidden");
         secOferta.classList.remove("hidden");
         noResults.classList.add("hidden");
-        syncGiantSectionUI("idiomas");
-        syncGiantSectionUI("oferta");
+        syncGiantSectionUI("idiomas", false);
+        syncGiantSectionUI("oferta", false);
       }
     }
 
-    // Botón flotante para volver arriba
+    // Botón flotante para volver arriba con aparición suave
     (function () {
       const btn = document.getElementById("btn-volver-arriba");
       if (!btn) return;
       window.addEventListener("scroll", function () {
         if (window.scrollY > 240) {
-          btn.classList.remove("hidden");
-          btn.classList.add("flex");
+          btn.classList.remove("translate-y-4", "opacity-0", "pointer-events-none");
+          btn.classList.add("translate-y-0", "opacity-100");
         } else {
-          btn.classList.add("hidden");
-          btn.classList.remove("flex");
+          btn.classList.add("translate-y-4", "opacity-0", "pointer-events-none");
+          btn.classList.remove("translate-y-0", "opacity-100");
         }
       }, { passive: true });
     })();
