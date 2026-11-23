@@ -1,0 +1,1025 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Guías de los cursos — EOI Barcelona Drassanes</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root {
+      --eoi-magenta: #E01E5A;
+      --eoi-magenta-dark: #B81447;
+      --eoi-magenta-deeper: #8A0D34;
+      --eoi-magenta-soft: #FFF1F5;
+      --eoi-magenta-border: #FBCFE0;
+    }
+
+    body {
+      background-color: #FFF9FB;
+      color: #1E293B;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    .eoi-bg-primary { background-color: var(--eoi-magenta); }
+    .eoi-bg-primary:hover { background-color: var(--eoi-magenta-dark); }
+    .eoi-text-primary { color: var(--eoi-magenta); }
+    .eoi-text-deep { color: var(--eoi-magenta-deeper); }
+    .eoi-border-primary { border-color: var(--eoi-magenta); }
+    .eoi-border-soft { border-color: var(--eoi-magenta-border); }
+    .eoi-bg-soft { background-color: var(--eoi-magenta-soft); }
+
+    .chevron-icon {
+      transition: transform 0.22s ease;
+    }
+    .is-open > button .chevron-icon,
+    .is-open .main-chevron {
+      transform: rotate(180deg);
+    }
+
+    mark.search-hl {
+      background-color: #FCE7F3;
+      color: #9D174D;
+      padding: 0 3px;
+      border-radius: 4px;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+  <div class="mx-auto w-full max-w-5xl flex-1 px-4 py-6 sm:px-6 lg:px-8">
+
+    <!-- Cabecera institucional EOI Barcelona Drassanes -->
+    <header class="rounded-2xl border eoi-border-soft bg-white p-5 shadow-sm sm:p-7">
+      <div class="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
+
+        <!-- Logotipo oficial -->
+        <div class="flex w-full shrink-0 items-center justify-center sm:w-52">
+          <img
+            src="./eoicert.jpg"
+            alt="Logotipo Escola Oficial d'Idiomes de Barcelona"
+            style="max-height: 108px; max-width: 100%; width: auto; height: auto; object-fit: contain;"
+            onerror="this.style.display='none'; document.getElementById('logo-fallback').classList.remove('hidden');"
+          />
+          <div id="logo-fallback" class="hidden flex items-center gap-3 rounded-xl border eoi-border-soft eoi-bg-soft px-4 py-3">
+            <span class="flex h-11 w-11 items-center justify-center rounded-full eoi-bg-primary text-xl font-extrabold text-white">eoi</span>
+            <div class="text-left leading-tight">
+              <div class="text-xs font-bold uppercase tracking-wider eoi-text-primary">barcelona</div>
+              <div class="text-xs font-bold uppercase tracking-wider eoi-text-primary">drassanes</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Título y selector de idioma de interfaz -->
+        <div class="flex-1 sm:pl-2">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <p class="text-xs font-bold uppercase tracking-widest eoi-text-primary">
+              ESCOLA OFICIAL D'IDIOMES · EOI BARCELONA DRASSANES
+            </p>
+
+            <!-- Selector Castellano / Català -->
+            <div class="inline-flex rounded-full border eoi-border-soft bg-pink-50/60 p-0.5" role="group" aria-label="Selector de idioma">
+              <button
+                type="button"
+                id="lang-btn-es"
+                onclick="setUILang('es')"
+                class="rounded-full px-3 py-1 text-xs font-bold transition eoi-bg-primary text-white shadow-xs"
+              >
+                Castellano
+              </button>
+              <button
+                type="button"
+                id="lang-btn-ca"
+                onclick="setUILang('ca')"
+                class="rounded-full px-3 py-1 text-xs font-bold text-slate-600 transition hover:text-pink-700"
+              >
+                Català
+              </button>
+            </div>
+          </div>
+
+          <h1 id="page-title" class="mt-2 text-2xl font-extrabold tracking-tight eoi-text-deep sm:text-3xl">
+            Guías de los cursos
+          </h1>
+          <p id="page-subtitle" class="mt-1.5 text-sm leading-relaxed text-slate-600">
+            Consulta los programas oficiales por idioma y nivel, así como los horarios y grupos de oferta específica del curso académico 2026-27.
+          </p>
+        </div>
+      </div>
+
+      <!-- Barra de búsqueda con lupa (texto plano o ID de idioma) -->
+      <div class="mt-6 border-t border-pink-100 pt-5">
+        <label for="search-input" id="search-label" class="block text-xs font-bold uppercase tracking-wider eoi-text-primary mb-2">
+          Buscar por idioma, nivel, docente o ID de idioma (ej. ES, EN, DE, B2.2, LSC, Nadia...)
+        </label>
+        <div class="relative flex items-center">
+          <span class="pointer-events-none absolute left-4 eoi-text-primary" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35m1.85-5.15a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </span>
+          <input
+            id="search-input"
+            type="text"
+            autocomplete="off"
+            placeholder="Escribe un idioma, código ID (DE, EN, ES, AR, JA...) o nivel..."
+            oninput="handleSearch(this.value)"
+            class="w-full rounded-xl border-2 eoi-border-soft bg-white py-3 pl-12 pr-24 text-sm font-medium text-slate-800 placeholder-slate-400 transition focus:border-pink-600 focus:outline-none focus:ring-2 focus:ring-pink-200"
+          />
+          <button
+            id="clear-search-btn"
+            type="button"
+            onclick="clearSearch()"
+            class="hidden absolute right-3 rounded-lg bg-pink-100 px-2.5 py-1 text-xs font-bold text-pink-800 transition hover:bg-pink-200"
+          >
+            Limpiar
+          </button>
+        </div>
+
+        <!-- Estado de búsqueda / estado inicial -->
+        <div class="mt-2.5 flex flex-wrap items-center justify-between gap-2 text-xs text-slate-500">
+          <span id="search-status">Secciones contraídas por defecto. Haz clic en un bloque para desplegarlo o usa el buscador.</span>
+          <span class="font-medium text-pink-700">Curso 2026-27</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Mensaje cuando no hay resultados -->
+    <div id="no-results" class="hidden mt-6 rounded-2xl border eoi-border-soft bg-white p-8 text-center shadow-sm">
+      <p id="no-results-title" class="text-base font-bold eoi-text-deep">No se han encontrado coincidencias</p>
+      <p id="no-results-desc" class="mt-1 text-sm text-slate-600">Prueba con otro nombre de idioma, nivel (ej. A1, B2.2) o código ID (ej. EN, FR, TR).</p>
+      <button type="button" onclick="clearSearch()" id="no-results-btn" class="mt-4 rounded-xl eoi-bg-primary px-4 py-2 text-xs font-bold text-white transition">
+        Mostrar todo
+      </button>
+    </div>
+
+    <!-- BLOQUE GIGANTE 1: IDIOMAS -->
+    <section id="section-idiomas" class="mt-6 rounded-2xl border-2 eoi-border-soft bg-white shadow-sm overflow-hidden">
+      <button
+        type="button"
+        id="toggle-idiomas-btn"
+        aria-expanded="false"
+        onclick="toggleGiantSection('idiomas')"
+        class="flex w-full items-center justify-between gap-4 bg-white px-5 py-5 text-left transition hover:bg-pink-50/50 sm:px-7 sm:py-6"
+      >
+        <div class="flex items-center gap-4">
+          <span class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl eoi-bg-primary text-white shadow-xs">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129" />
+            </svg>
+          </span>
+          <div>
+            <div class="flex flex-wrap items-center gap-2.5">
+              <h2 id="idiomas-heading" class="text-xl font-extrabold tracking-tight eoi-text-deep sm:text-2xl">
+                Idiomas
+              </h2>
+              <span id="idiomas-badge" class="rounded-full eoi-bg-soft border eoi-border-soft px-3 py-0.5 text-xs font-bold eoi-text-primary">
+                15 idiomas
+              </span>
+            </div>
+            <p id="idiomas-sub" class="mt-0.5 text-xs text-slate-500 sm:text-sm">
+              Despliega para ver todos los idiomas oficiales y acceder al programa de cada nivel.
+            </p>
+          </div>
+        </div>
+
+        <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full eoi-bg-soft eoi-text-primary">
+          <svg class="main-chevron chevron-icon h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+          </svg>
+        </span>
+      </button>
+
+      <!-- Contenedor desplegable de los 15 idiomas -->
+      <div id="body-idiomas" class="hidden border-t border-pink-100 bg-pink-50/25 p-4 sm:p-6">
+        <div id="idiomas-grid" class="grid grid-cols-1 gap-3 md:grid-cols-2">
+          <!-- Renderizado dinámico por JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- BLOQUE GIGANTE 2: OFERTA ESPECÍFICA -->
+    <section id="section-oferta" class="mt-5 rounded-2xl border-2 eoi-border-soft bg-white shadow-sm overflow-hidden">
+      <button
+        type="button"
+        id="toggle-oferta-btn"
+        aria-expanded="false"
+        onclick="toggleGiantSection('oferta')"
+        class="flex w-full items-center justify-between gap-4 bg-white px-5 py-5 text-left transition hover:bg-pink-50/50 sm:px-7 sm:py-6"
+      >
+        <div class="flex items-center gap-4">
+          <span class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border-2 eoi-border-primary bg-white eoi-text-primary shadow-xs">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+          </span>
+          <div>
+            <div class="flex flex-wrap items-center gap-2.5">
+              <h2 id="oferta-heading" class="text-xl font-extrabold tracking-tight eoi-text-deep sm:text-2xl">
+                Oferta específica
+              </h2>
+              <span id="oferta-badge" class="rounded-full eoi-bg-soft border eoi-border-soft px-3 py-0.5 text-xs font-bold eoi-text-primary">
+                10 idiomas
+              </span>
+            </div>
+            <p id="oferta-sub" class="mt-0.5 text-xs text-slate-500 sm:text-sm">
+              Cursos de oferta específica con niveles, horarios, fechas y profesorado asignado (2026-27).
+            </p>
+          </div>
+        </div>
+
+        <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full eoi-bg-soft eoi-text-primary">
+          <svg class="main-chevron chevron-icon h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+          </svg>
+        </span>
+      </button>
+
+      <!-- Contenedor desplegable de Oferta específica -->
+      <div id="body-oferta" class="hidden border-t border-pink-100 bg-pink-50/25 p-4 sm:p-6">
+        <div id="oferta-note" class="mb-4 rounded-xl border eoi-border-soft bg-white px-4 py-3 text-xs leading-relaxed text-slate-600 sm:text-sm">
+          Estos idiomas forman parte de la <strong>Oferta específica</strong> y no disponen de un programa de curso curricular independiente; aquí puedes consultar sus grupos, horarios, fechas y profesorado.
+        </div>
+        <div id="oferta-list" class="space-y-3">
+          <!-- Renderizado dinámico por JS -->
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- Pie institucional -->
+  <footer class="mx-auto w-full max-w-5xl px-4 pb-8 pt-2 sm:px-6 lg:px-8">
+    <div class="rounded-2xl border eoi-border-soft bg-white px-5 py-4 text-center text-xs text-slate-600 shadow-xs">
+      <p class="font-bold eoi-text-deep">Escola Oficial d'Idiomes · EOI Barcelona Drassanes</p>
+      <p class="mt-1">
+        Av. Drassanes, 14 · 08001 Barcelona · Tel. 93 324 93 30 · Fax 93 324 93 51 ·
+        <a href="https://www.eoibd.cat" target="_blank" rel="noopener noreferrer" class="font-semibold eoi-text-primary underline decoration-pink-300 underline-offset-2 hover:opacity-80">www.eoibd.cat</a>
+      </p>
+    </div>
+  </footer>
+
+  <!-- Botón flotante permanente para volver arriba -->
+  <button
+    id="btn-volver-arriba"
+    type="button"
+    aria-label="Volver arriba"
+    onclick="window.scrollTo({ top: 0, behavior: 'smooth' })"
+    class="fixed bottom-5 right-5 z-50 hidden items-center gap-1.5 rounded-full eoi-bg-primary px-4 py-2.5 text-sm font-bold text-white shadow-lg transition focus:outline-none focus:ring-2 focus:ring-pink-400"
+  >
+    <span>↑</span>
+    <span id="btn-top-text">Arriba</span>
+  </button>
+
+  <script>
+    const OFFICIAL_LANGUAGES = [
+      {
+        id: "DE",
+        slug: "alemany",
+        name: { es: "Alemán", ca: "Alemany" },
+        levels: [
+          { label: "Programa A1", code: "A1", slug: "a1" },
+          { label: "Programa A2", code: "A2", slug: "a2" },
+          { label: "Programa B1", code: "B1", slug: "b1" },
+          { label: "Programa B2.1", code: "B2.1", slug: "b2-1" },
+          { label: "Programa B2.2", code: "B2.2", slug: "b2-2" },
+          { label: "Programa C1", code: "C1", slug: "c1" }
+        ]
+      },
+      {
+        id: "EN",
+        slug: "angles",
+        name: { es: "Inglés", ca: "Anglès" },
+        levels: [
+          { label: "A1", code: "A1", slug: "a1" },
+          { label: "A2", code: "A2", slug: "a2" },
+          { label: "B1", code: "B1", slug: "b1" },
+          { label: "B2.1", code: "B2.1", slug: "b2-1" },
+          { label: "B2.2", code: "B2.2", slug: "b2-2" },
+          { label: "C1", code: "C1", slug: "c1" },
+          { label: "C2.1", code: "C2.1", slug: "c2-1" },
+          { label: "C2.2", code: "C2.2", slug: "c2-2" }
+        ]
+      },
+      {
+        id: "AR",
+        slug: "arab",
+        name: { es: "Árabe", ca: "Àrab" },
+        levels: [
+          { label: "A1", code: "A1", slug: "a1" },
+          { label: "A2", code: "A2", slug: "a2" },
+          { label: "B1.1", code: "B1.1", slug: "b1-1" },
+          { label: "B1.2", code: "B1.2", slug: "b1-2" },
+          { label: "B2.1", code: "B2.1", slug: "b2-1" },
+          { label: "B2.2", code: "B2.2", slug: "b2-2" }
+        ]
+      },
+      {
+        id: "CA",
+        slug: "catala",
+        name: { es: "Catalán", ca: "Català" },
+        levels: [
+          { label: "A1", code: "A1", slug: "a1" },
+          { label: "A2", code: "A2", slug: "a2" },
+          { label: "B1", code: "B1", slug: "b1" },
+          { label: "B2", code: "B2", slug: "b2" },
+          { label: "C1", code: "C1", slug: "c1" },
+          { label: "C2", code: "C2", slug: "c2" }
+        ]
+      },
+      {
+        id: "KO",
+        slug: "corea",
+        name: { es: "Coreano", ca: "Coreà" },
+        levels: [
+          { label: "A1", code: "A1", slug: "a1" },
+          { label: "A2", code: "A2", slug: "a2" },
+          { label: "B1.1", code: "B1.1", slug: "b1-1" },
+          { label: "B1.2", code: "B1.2", slug: "b1-2" }
+        ]
+      },
+      {
+        id: "ES",
+        slug: "espanyol",
+        name: { es: "Español", ca: "Espanyol" },
+        levels: [
+          { label: "A1", code: "A1", slug: "a1" },
+          { label: "A2", code: "A2", slug: "a2" },
+          { label: "B1", code: "B1", slug: "b1" },
+          { label: "B2.1", code: "B2.1", slug: "b2-1" },
+          { label: "B2.2", code: "B2.2", slug: "b2-2", published: true }
+        ]
+      },
+      {
+        id: "EU",
+        slug: "euscar",
+        name: { es: "Vasco (Euskera)", ca: "Èuscar" },
+        levels: [
+          { label: "A1", code: "A1", slug: "a1" },
+          { label: "A2", code: "A2", slug: "a2" },
+          { label: "B1", code: "B1", slug: "b1" },
+          { label: "B2.1", code: "B2.1", slug: "b2-1" },
+          { label: "B2.2", code: "B2.2", slug: "b2-2" }
+        ]
+      },
+      {
+        id: "FR",
+        slug: "frances",
+        name: { es: "Francés", ca: "Francès" },
+        levels: [
+          { label: "A1", code: "A1", slug: "a1" },
+          { label: "A2", code: "A2", slug: "a2" },
+          { label: "B1", code: "B1", slug: "b1" },
+          { label: "B2.1", code: "B2.1", slug: "b2-1" },
+          { label: "B2.2", code: "B2.2", slug: "b2-2" },
+          { label: "C1", code: "C1", slug: "c1" }
+        ]
+      },
+      {
+        id: "EL",
+        slug: "grec",
+        name: { es: "Griego", ca: "Grec" },
+        levels: [
+          { label: "A1", code: "A1", slug: "a1" },
+          { label: "A2", code: "A2", slug: "a2" },
+          { label: "B1", code: "B1", slug: "b1" },
+          { label: "B2.1", code: "B2.1", slug: "b2-1" },
+          { label: "B2.2", code: "B2.2", slug: "b2-2" }
+        ]
+      },
+      {
+        id: "IT",
+        slug: "italia",
+        name: { es: "Italiano", ca: "Italià" },
+        levels: [
+          { label: "A1", code: "A1", slug: "a1" },
+          { label: "A2", code: "A2", slug: "a2" },
+          { label: "B1", code: "B1", slug: "b1" },
+          { label: "B2.1", code: "B2.1", slug: "b2-1" },
+          { label: "B2.2", code: "B2.2", slug: "b2-2" },
+          { label: "C1", code: "C1", slug: "c1" }
+        ]
+      },
+      {
+        id: "JA",
+        slug: "japones",
+        name: { es: "Japonés", ca: "Japonès" },
+        levels: [
+          { label: "A1", code: "A1", slug: "a1" },
+          { label: "A2", code: "A2", slug: "a2" },
+          { label: "B1.1", code: "B1.1", slug: "b1-1" },
+          { label: "B1.2", code: "B1.2", slug: "b1-2" },
+          { label: "B2.1", code: "B2.1", slug: "b2-1" },
+          { label: "B2.2", code: "B2.2", slug: "b2-2" }
+        ]
+      },
+      {
+        id: "NL",
+        slug: "neerlandes",
+        name: { es: "Neerlandés", ca: "Neerlandès" },
+        levels: [
+          { label: "A1", code: "A1", slug: "a1" },
+          { label: "A2", code: "A2", slug: "a2" },
+          { label: "B1", code: "B1", slug: "b1" },
+          { label: "B2.1", code: "B2.1", slug: "b2-1" },
+          { label: "B2.2", code: "B2.2", slug: "b2-2" }
+        ]
+      },
+      {
+        id: "PT",
+        slug: "portugues",
+        name: { es: "Portugués", ca: "Portuguès" },
+        levels: [
+          { label: "A1", code: "A1", slug: "a1" },
+          { label: "A2", code: "A2", slug: "a2" },
+          { label: "B1", code: "B1", slug: "b1" },
+          { label: "B2.1", code: "B2.1", slug: "b2-1" },
+          { label: "B2.2", code: "B2.2", slug: "b2-2" }
+        ]
+      },
+      {
+        id: "RU",
+        slug: "rus",
+        name: { es: "Ruso", ca: "Rus" },
+        levels: [
+          { label: "A1", code: "A1", slug: "a1" },
+          { label: "A2", code: "A2", slug: "a2" },
+          { label: "B1.1", code: "B1.1", slug: "b1-1" },
+          { label: "B1.2", code: "B1.2", slug: "b1-2" },
+          { label: "B2.1", code: "B2.1", slug: "b2-1" },
+          { label: "B2.2", code: "B2.2", slug: "b2-2" }
+        ]
+      },
+      {
+        id: "ZH",
+        slug: "xines",
+        name: { es: "Chino", ca: "Xinès" },
+        levels: [
+          { label: "A1", code: "A1", slug: "a1" },
+          { label: "A2", code: "A2", slug: "a2" },
+          { label: "B1.1", code: "B1.1", slug: "b1-1" },
+          { label: "B1.2", code: "B1.2", slug: "b1-2" },
+          { label: "B2.1", code: "B2.1", slug: "b2-1" },
+          { label: "B2.2", code: "B2.2", slug: "b2-2" }
+        ]
+      }
+    ];
+
+    const SPECIFIC_OFFER = [
+      {
+        id: "DA",
+        name: { es: "Danés", ca: "Danès" },
+        groups: [
+          { level: "A1.1", schedule: "Dijous, 18.30 - 20.30 h", dates: "15/10/26 - 03/06/27", teacher: "Lea Beliaeva" }
+        ]
+      },
+      {
+        id: "ARY",
+        name: { es: "Dariya", ca: "Dàrija" },
+        groups: [
+          { level: "1.1", schedule: "Divendres, 16.00 - 18.00 h", dates: "16/10/26 - 04/06/27", teacher: "Nadia Belkouch" },
+          { level: "1.2", schedule: "", dates: "", teacher: "" },
+          { level: "2.1", schedule: "Dijous, 18.30 - 20.30 h", dates: "15/10/26 - 03/06/27", teacher: "Nadia Belkouch" },
+          { level: "3.1", schedule: "", dates: "", teacher: "" }
+        ]
+      },
+      {
+        id: "GL",
+        name: { es: "Gallego", ca: "Gallec" },
+        groups: [
+          { level: "A1", schedule: "Dijous, 18.30 - 20.30 h", dates: "22/10/26 - 10/06/27", teacher: "Jaume Silvestre" },
+          { level: "A2", schedule: "Dijous, 18.30 - 20.30 h", scheduleChange: true, dates: "22/10/26 - 10/06/27", datesChange: true, teacher: "Jaume Silvestre" },
+          { level: "B1", schedule: "", dates: "", teacher: "" }
+        ]
+      },
+      {
+        id: "HE",
+        name: { es: "Hebreo", ca: "Hebreu" },
+        groups: [
+          { level: "1.1", schedule: "Dimarts, 16.00 - 18.00 h", dates: "13/10/26 - 15/06/27", teacher: "Òscar Ayala" },
+          { level: "1.2", schedule: "Dijous, 16.00 - 18.00 h", dates: "15/10/26 - 03/06/27", teacher: "Òscar Ayala" },
+          { level: "2.1", schedule: "", dates: "", teacher: "" },
+          { level: "3.1", schedule: "Dimarts, 18.30 - 20.30 h", dates: "13/10/26 - 15/06/27", teacher: "Òscar Ayala" }
+        ]
+      },
+      {
+        id: "LSC",
+        name: { es: "Lengua de signos catalana", ca: "Llengua de signes catalana" },
+        groups: [
+          { level: "A1.1", schedule: "Dijous, 16.30 - 18.30 h", dates: "22/10/26 - 10/06/27", datesChange: true, teacher: "Santiago Frigola" },
+          { level: "A1.2", schedule: "", dates: "", teacher: "" },
+          { level: "A2.1", schedule: "Divendres, 16.00 - 18.00 h", dates: "23/10/26 - 11/06/27", datesChange: true, teacher: "Santiago Frigola" },
+          { level: "B1.2", schedule: "Dimecres, 18.30 - 20.30 h", scheduleChange: true, dates: "21/10/26 - 09/06/27", datesChange: true, teacher: "Santiago Frigola" }
+        ]
+      },
+      {
+        id: "FA",
+        name: { es: "Persa", ca: "Persa" },
+        groups: [
+          { level: "1.1", schedule: "Divendres, 18.00 - 20.00 h", dates: "16/10/26 - 04/06/27", teacher: "Najibullah Afghan" }
+        ]
+      },
+      {
+        id: "PL",
+        name: { es: "Polaco", ca: "Polonès" },
+        groups: [
+          { level: "A1.1", schedule: "Divendres, 18.00 - 20.00 h", dates: "16/10/26 - 04/06/27", teacher: "Agnieszka Wozniak" },
+          { level: "A1.2", schedule: "Dijous, 18.30 - 20.30 h", dates: "15/10/26 - 03/06/27", teacher: "Paula Arnas" },
+          { level: "A2.1", schedule: "Divendres, 18.00 - 20.00 h", scheduleChange: true, dates: "16/10/26 - 04/06/27", datesChange: true, teacher: "Filip Ramesh Mitra" },
+          { level: "A2.2", schedule: "Dijous, 18.30 - 20.30 h", scheduleChange: true, dates: "15/10/26 - 03/06/27", datesChange: true, teacher: "Agnieszka Wozniak" }
+        ]
+      },
+      {
+        id: "QU",
+        name: { es: "Quechua", ca: "Quítxua" },
+        groups: [
+          { level: "1.1", schedule: "", dates: "", teacher: "" }
+        ]
+      },
+      {
+        id: "SV",
+        name: { es: "Sueco", ca: "Suec" },
+        groups: [
+          { level: "A1.1", schedule: "Dijous, 16.15 - 18.15 h", dates: "15/10/26 - 03/06/27", teacher: "Linnea Rutström" },
+          { level: "B1.1", schedule: "Dijous, 18.30 - 20.30 h", dates: "15/10/26 - 03/06/27", teacher: "Linnea Rutström" }
+        ]
+      },
+      {
+        id: "TR",
+        name: { es: "Turco", ca: "Turc" },
+        groups: [
+          { level: "1.1", schedule: "Dijous, 16.15 - 18.15 h", dates: "15/10/26 - 03/06/27", teacher: "Tarkan Fenercioglu" },
+          { level: "1.2", schedule: "Dilluns, 18.30 - 20.30 h", dates: "19/10/26 - 28/06/27", teacher: "Tarkan Fenercioglu" },
+          { level: "2.1", schedule: "Dilluns, 16.15 - 18.15 h", dates: "19/10/26 - 28/06/27", teacher: "Tarkan Fenercioglu" },
+          { level: "3.1", schedule: "Divendres, 18.00 - 20.00 h", dates: "16/10/26 - 04/06/27", teacher: "Tarkan Fenercioglu" },
+          { level: "3.2", schedule: "Divendres, 16.00 - 18.00 h", dates: "16/10/26 - 04/06/27", teacher: "Tarkan Fenercioglu" }
+        ]
+      }
+    ];
+
+    const I18N = {
+      es: {
+        docTitle: "Guías de los cursos — EOI Barcelona Drassanes",
+        pageTitle: "Guías de los cursos",
+        pageSubtitle: "Consulta los programas oficiales por idioma y nivel, así como los horarios y grupos de oferta específica del curso académico 2026-27.",
+        searchLabel: "Buscar por idioma, nivel, docente o ID de idioma (ej. ES, EN, DE, B2.2, LSC, Nadia...)",
+        searchPlaceholder: "Escribe un idioma, código ID (DE, EN, ES, AR, JA...) o nivel...",
+        clearBtn: "Limpiar",
+        defaultStatus: "Secciones contraídas por defecto. Haz clic en un bloque para desplegarlo o usa el buscador.",
+        idiomasHeading: "Idiomas",
+        idiomasBadge: "15 idiomas",
+        idiomasSub: "Despliega para ver todos los idiomas oficiales y acceder al programa de cada nivel.",
+        ofertaHeading: "Oferta específica",
+        ofertaBadge: "10 idiomas",
+        ofertaSub: "Cursos de oferta específica con niveles, horarios, fechas y profesorado asignado (2026-27).",
+        ofertaNote: "Estos idiomas forman parte de la <strong>Oferta específica</strong> y no disponen de un programa de curso curricular independiente; aquí puedes consultar sus grupos, horarios, fechas y profesorado.",
+        levelsWord: (n) => `${n} niveles`,
+        groupsWord: (n) => n === 1 ? "1 grupo" : `${n} grupos`,
+        openProgramHint: "Selecciona un nivel para abrir su programa de curso:",
+        publishedTag: "Disponible",
+        colLevel: "Nivel",
+        colSchedule: "Horario",
+        colDates: "Fechas",
+        colTeacher: "Profesorado",
+        scheduleChangeTag: "CANVI D'HORARI",
+        datesChangeTag: "CANVI DE DATES",
+        unassigned: "Por determinar",
+        btnTop: "Arriba",
+        noResultsTitle: "No se han encontrado coincidencias",
+        noResultsDesc: "Prueba con otro nombre de idioma, nivel (ej. A1, B2.2) o código ID (ej. EN, FR, TR).",
+        noResultsBtn: "Mostrar todo",
+        resultsCount: (n) => n === 1 ? "1 coincidencia encontrada" : `${n} coincidencias encontradas`
+      },
+      ca: {
+        docTitle: "Guies dels cursos — EOI Barcelona Drassanes",
+        pageTitle: "Guies dels cursos",
+        pageSubtitle: "Consulta els programes oficials per idioma i nivell, així com els horaris i grups d'oferta específica del curs acadèmic 2026-27.",
+        searchLabel: "Cerca per idioma, nivell, docent o ID d'idioma (ex. ES, EN, DE, B2.2, LSC, Nadia...)",
+        searchPlaceholder: "Escriu un idioma, codi ID (DE, EN, ES, AR, JA...) o nivell...",
+        clearBtn: "Neteja",
+        defaultStatus: "Seccions contretes per defecte. Fes clic en un bloc per desplegar-lo o fes servir el cercador.",
+        idiomasHeading: "Idiomes",
+        idiomasBadge: "15 idiomes",
+        idiomasSub: "Desplega per veure tots els idiomes oficials i accedir al programa de cada nivell.",
+        ofertaHeading: "Oferta específica",
+        ofertaBadge: "10 idiomes",
+        ofertaSub: "Cursos d'oferta específica amb nivells, horaris, dates i professorat assignat (2026-27).",
+        ofertaNote: "Aquests idiomes formen part de l'<strong>Oferta específica</strong> i no disposen d'un programa de curs curricular independent; aquí pots consultar els seus grups, horaris, dates i professorat.",
+        levelsWord: (n) => `${n} nivells`,
+        groupsWord: (n) => n === 1 ? "1 grup" : `${n} grups`,
+        openProgramHint: "Selecciona un nivell per obrir el seu programa de curs:",
+        publishedTag: "Disponible",
+        colLevel: "Nivell",
+        colSchedule: "Horari",
+        colDates: "Dates",
+        colTeacher: "Professorat",
+        scheduleChangeTag: "CANVI D'HORARI",
+        datesChangeTag: "CANVI DE DATES",
+        unassigned: "Per determinar",
+        btnTop: "Amunt",
+        noResultsTitle: "No s'han trobat coincidències",
+        noResultsDesc: "Prova amb un altre nom d'idioma, nivell (ex. A1, B2.2) o codi ID (ex. EN, FR, TR).",
+        noResultsBtn: "Mostra-ho tot",
+        resultsCount: (n) => n === 1 ? "1 coincidència trobada" : `${n} coincidències trobades`
+      }
+    };
+
+    let currentLang = "es";
+    let searchQuery = "";
+    const openLanguages = new Set();
+    const openOferta = new Set();
+    let giantOpen = { idiomas: false, oferta: false };
+
+    function normalizeText(str) {
+      return (str || "")
+        .toString()
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[̀-ͯ]/g, "")
+        .trim();
+    }
+
+    function setUILang(lang) {
+      currentLang = lang;
+      const t = I18N[lang];
+      document.documentElement.lang = lang;
+      document.title = t.docTitle;
+
+      const btnEs = document.getElementById("lang-btn-es");
+      const btnCa = document.getElementById("lang-btn-ca");
+      if (lang === "es") {
+        btnEs.className = "rounded-full px-3 py-1 text-xs font-bold transition eoi-bg-primary text-white shadow-xs";
+        btnCa.className = "rounded-full px-3 py-1 text-xs font-bold text-slate-600 transition hover:text-pink-700";
+      } else {
+        btnCa.className = "rounded-full px-3 py-1 text-xs font-bold transition eoi-bg-primary text-white shadow-xs";
+        btnEs.className = "rounded-full px-3 py-1 text-xs font-bold text-slate-600 transition hover:text-pink-700";
+      }
+
+      document.getElementById("page-title").textContent = t.pageTitle;
+      document.getElementById("page-subtitle").textContent = t.pageSubtitle;
+      document.getElementById("search-label").textContent = t.searchLabel;
+      document.getElementById("search-input").placeholder = t.searchPlaceholder;
+      document.getElementById("clear-search-btn").textContent = t.clearBtn;
+      document.getElementById("idiomas-heading").textContent = t.idiomasHeading;
+      document.getElementById("idiomas-badge").textContent = t.idiomasBadge;
+      document.getElementById("idiomas-sub").textContent = t.idiomasSub;
+      document.getElementById("oferta-heading").textContent = t.ofertaHeading;
+      document.getElementById("oferta-badge").textContent = t.ofertaBadge;
+      document.getElementById("oferta-sub").textContent = t.ofertaSub;
+      document.getElementById("oferta-note").innerHTML = t.ofertaNote;
+      document.getElementById("btn-top-text").textContent = t.btnTop;
+      document.getElementById("no-results-title").textContent = t.noResultsTitle;
+      document.getElementById("no-results-desc").textContent = t.noResultsDesc;
+      document.getElementById("no-results-btn").textContent = t.noResultsBtn;
+
+      renderAll();
+    }
+
+    function toggleGiantSection(key) {
+      giantOpen[key] = !giantOpen[key];
+      syncGiantSectionUI(key);
+    }
+
+    function syncGiantSectionUI(key) {
+      const section = document.getElementById(`section-${key}`);
+      const body = document.getElementById(`body-${key}`);
+      const btn = document.getElementById(`toggle-${key}-btn`);
+      if (giantOpen[key]) {
+        section.classList.add("is-open");
+        body.classList.remove("hidden");
+        btn.setAttribute("aria-expanded", "true");
+      } else {
+        section.classList.remove("is-open");
+        body.classList.add("hidden");
+        btn.setAttribute("aria-expanded", "false");
+      }
+    }
+
+    function toggleLangCard(id) {
+      if (openLanguages.has(id)) {
+        openLanguages.delete(id);
+      } else {
+        openLanguages.add(id);
+      }
+      renderIdiomas();
+    }
+
+    function toggleOfertaCard(id) {
+      if (openOferta.has(id)) {
+        openOferta.delete(id);
+      } else {
+        openOferta.add(id);
+      }
+      renderOferta();
+    }
+
+    function handleSearch(val) {
+      searchQuery = val;
+      const clearBtn = document.getElementById("clear-search-btn");
+      if (val.trim().length > 0) {
+        clearBtn.classList.remove("hidden");
+      } else {
+        clearBtn.classList.add("hidden");
+      }
+      renderAll();
+    }
+
+    function clearSearch() {
+      const input = document.getElementById("search-input");
+      input.value = "";
+      searchQuery = "";
+      document.getElementById("clear-search-btn").classList.add("hidden");
+      openLanguages.clear();
+      openOferta.clear();
+      giantOpen.idiomas = false;
+      giantOpen.oferta = false;
+      syncGiantSectionUI("idiomas");
+      syncGiantSectionUI("oferta");
+      renderAll();
+    }
+
+    function renderIdiomas() {
+      const t = I18N[currentLang];
+      const q = normalizeText(searchQuery);
+      const grid = document.getElementById("idiomas-grid");
+      grid.innerHTML = "";
+
+      let matchedCount = 0;
+
+      OFFICIAL_LANGUAGES.forEach((lang) => {
+        const namePrimary = lang.name[currentLang];
+        const nameAlt = lang.name[currentLang === "es" ? "ca" : "es"];
+        const idNorm = normalizeText(lang.id);
+        const nameEsNorm = normalizeText(lang.name.es);
+        const nameCaNorm = normalizeText(lang.name.ca);
+
+        const langDirectMatch =
+          !q ||
+          idNorm === q ||
+          idNorm.includes(q) ||
+          nameEsNorm.includes(q) ||
+          nameCaNorm.includes(q);
+
+        const matchingLevels = lang.levels.filter((lvl) => {
+          if (!q || langDirectMatch) return true;
+          return (
+            normalizeText(lvl.label).includes(q) ||
+            normalizeText(lvl.code).includes(q)
+          );
+        });
+
+        if (q && !langDirectMatch && matchingLevels.length === 0) {
+          return;
+        }
+
+        matchedCount++;
+        const isExpanded = q ? true : openLanguages.has(lang.id);
+
+        const card = document.createElement("div");
+        card.className = `rounded-xl border transition ${
+          isExpanded
+            ? "border-pink-400 bg-white shadow-sm is-open"
+            : "eoi-border-soft bg-white hover:border-pink-300"
+        }`;
+
+        const levelsHtml = matchingLevels
+          .map((lvl) => {
+            const href = `./${lang.slug}/${lvl.slug}/`;
+            const publishedBadge = lvl.published
+              ? `<span class="ml-1.5 rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-emerald-800">${t.publishedTag}</span>`
+              : "";
+            return `
+              <a
+                href="${href}"
+                class="group flex items-center justify-between rounded-lg border eoi-border-soft bg-pink-50/40 px-3.5 py-2.5 text-sm font-bold eoi-text-deep transition hover:border-pink-600 hover:bg-pink-600 hover:text-white"
+              >
+                <span class="flex items-center">
+                  <span>${lvl.label}</span>
+                  ${publishedBadge}
+                </span>
+                <span class="text-xs font-semibold opacity-75 group-hover:opacity-100">→</span>
+              </a>
+            `;
+          })
+          .join("");
+
+        card.innerHTML = `
+          <button
+            type="button"
+            aria-expanded="${isExpanded}"
+            onclick="toggleLangCard('${lang.id}')"
+            class="flex w-full items-center justify-between gap-3 px-4 py-3.5 text-left"
+          >
+            <div class="flex items-center gap-3">
+              <span class="inline-flex h-9 w-10 shrink-0 items-center justify-center rounded-lg eoi-bg-soft border eoi-border-soft text-xs font-extrabold tracking-wider eoi-text-primary">
+                ${lang.id}
+              </span>
+              <div>
+                <div class="text-base font-extrabold text-slate-900">${namePrimary}</div>
+                <div class="text-xs text-slate-500">${nameAlt} · ${t.levelsWord(lang.levels.length)}</div>
+              </div>
+            </div>
+            <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-pink-50 eoi-text-primary">
+              <svg class="chevron-icon h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+              </svg>
+            </span>
+          </button>
+          <div class="${isExpanded ? "" : "hidden"} border-t border-pink-100 px-4 pb-4 pt-3">
+            <p class="mb-2.5 text-xs font-medium text-slate-500">${t.openProgramHint}</p>
+            <div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
+              ${levelsHtml}
+            </div>
+          </div>
+        `;
+
+        grid.appendChild(card);
+      });
+
+      return matchedCount;
+    }
+
+    function renderOferta() {
+      const t = I18N[currentLang];
+      const q = normalizeText(searchQuery);
+      const list = document.getElementById("oferta-list");
+      list.innerHTML = "";
+
+      let matchedCount = 0;
+
+      SPECIFIC_OFFER.forEach((item) => {
+        const namePrimary = item.name[currentLang];
+        const nameAlt = item.name[currentLang === "es" ? "ca" : "es"];
+        const idNorm = normalizeText(item.id);
+        const nameEsNorm = normalizeText(item.name.es);
+        const nameCaNorm = normalizeText(item.name.ca);
+
+        const langDirectMatch =
+          !q ||
+          idNorm === q ||
+          idNorm.includes(q) ||
+          nameEsNorm.includes(q) ||
+          nameCaNorm.includes(q);
+
+        const matchingGroups = item.groups.filter((g) => {
+          if (!q || langDirectMatch) return true;
+          return (
+            normalizeText(g.level).includes(q) ||
+            normalizeText(g.schedule).includes(q) ||
+            normalizeText(g.dates).includes(q) ||
+            normalizeText(g.teacher).includes(q)
+          );
+        });
+
+        if (q && !langDirectMatch && matchingGroups.length === 0) {
+          return;
+        }
+
+        matchedCount++;
+        const isExpanded = q ? true : openOferta.has(item.id);
+
+        const rowsHtml = matchingGroups
+          .map((g) => {
+            const schedCell = g.schedule
+              ? `${g.scheduleChange ? `<span class="mb-1 inline-block rounded bg-pink-100 px-1.5 py-0.5 text-[10px] font-extrabold text-pink-800">${t.scheduleChangeTag}</span><br/>` : ""}${g.schedule}`
+              : `<span class="text-slate-400 italic">${t.unassigned}</span>`;
+
+            const datesCell = g.dates
+              ? `${g.datesChange ? `<span class="mb-1 inline-block rounded bg-pink-100 px-1.5 py-0.5 text-[10px] font-extrabold text-pink-800">${t.datesChangeTag}</span><br/>` : ""}${g.dates}`
+              : `<span class="text-slate-400 italic">—</span>`;
+
+            const teacherCell = g.teacher
+              ? g.teacher
+              : `<span class="text-slate-400 italic">—</span>`;
+
+            return `
+              <tr class="border-t border-pink-100 hover:bg-pink-50/30">
+                <td class="whitespace-nowrap px-3.5 py-2.5 font-extrabold eoi-text-deep">${g.level}</td>
+                <td class="px-3.5 py-2.5 text-slate-700">${schedCell}</td>
+                <td class="px-3.5 py-2.5 text-slate-700">${datesCell}</td>
+                <td class="px-3.5 py-2.5 font-medium text-slate-800">${teacherCell}</td>
+              </tr>
+            `;
+          })
+          .join("");
+
+        const card = document.createElement("div");
+        card.className = `rounded-xl border transition ${
+          isExpanded
+            ? "border-pink-400 bg-white shadow-sm is-open"
+            : "eoi-border-soft bg-white hover:border-pink-300"
+        }`;
+
+        card.innerHTML = `
+          <button
+            type="button"
+            aria-expanded="${isExpanded}"
+            onclick="toggleOfertaCard('${item.id}')"
+            class="flex w-full items-center justify-between gap-3 px-4 py-3.5 text-left"
+          >
+            <div class="flex items-center gap-3">
+              <span class="inline-flex h-9 min-w-[2.75rem] px-2 shrink-0 items-center justify-center rounded-lg eoi-bg-soft border eoi-border-soft text-xs font-extrabold tracking-wider eoi-text-primary">
+                ${item.id}
+              </span>
+              <div>
+                <div class="text-base font-extrabold text-slate-900">${namePrimary}</div>
+                <div class="text-xs text-slate-500">${nameAlt} · ${t.groupsWord(item.groups.length)}</div>
+              </div>
+            </div>
+            <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-pink-50 eoi-text-primary">
+              <svg class="chevron-icon h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+              </svg>
+            </span>
+          </button>
+          <div class="${isExpanded ? "" : "hidden"} border-t border-pink-100 p-3 sm:p-4">
+            <div class="overflow-x-auto rounded-lg border eoi-border-soft">
+              <table class="w-full text-left text-xs sm:text-sm">
+                <thead class="eoi-bg-primary text-white">
+                  <tr>
+                    <th class="px-3.5 py-2.5 font-bold">${t.colLevel}</th>
+                    <th class="px-3.5 py-2.5 font-bold">${t.colSchedule}</th>
+                    <th class="px-3.5 py-2.5 font-bold">${t.colDates}</th>
+                    <th class="px-3.5 py-2.5 font-bold">${t.colTeacher}</th>
+                  </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-pink-100">
+                  ${rowsHtml}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        `;
+
+        list.appendChild(card);
+      });
+
+      return matchedCount;
+    }
+
+    function renderAll() {
+      const t = I18N[currentLang];
+      const q = normalizeText(searchQuery);
+      const idiomasMatches = renderIdiomas();
+      const ofertaMatches = renderOferta();
+
+      const secIdiomas = document.getElementById("section-idiomas");
+      const secOferta = document.getElementById("section-oferta");
+      const noResults = document.getElementById("no-results");
+      const statusEl = document.getElementById("search-status");
+
+      if (q) {
+        const total = idiomasMatches + ofertaMatches;
+        statusEl.textContent = t.resultsCount(total);
+
+        if (idiomasMatches > 0) {
+          secIdiomas.classList.remove("hidden");
+          giantOpen.idiomas = true;
+          syncGiantSectionUI("idiomas");
+        } else {
+          secIdiomas.classList.add("hidden");
+        }
+
+        if (ofertaMatches > 0) {
+          secOferta.classList.remove("hidden");
+          giantOpen.oferta = true;
+          syncGiantSectionUI("oferta");
+        } else {
+          secOferta.classList.add("hidden");
+        }
+
+        if (total === 0) {
+          noResults.classList.remove("hidden");
+        } else {
+          noResults.classList.add("hidden");
+        }
+      } else {
+        statusEl.textContent = t.defaultStatus;
+        secIdiomas.classList.remove("hidden");
+        secOferta.classList.remove("hidden");
+        noResults.classList.add("hidden");
+        syncGiantSectionUI("idiomas");
+        syncGiantSectionUI("oferta");
+      }
+    }
+
+    // Botón flotante para volver arriba
+    (function () {
+      const btn = document.getElementById("btn-volver-arriba");
+      if (!btn) return;
+      window.addEventListener("scroll", function () {
+        if (window.scrollY > 240) {
+          btn.classList.remove("hidden");
+          btn.classList.add("flex");
+        } else {
+          btn.classList.add("hidden");
+          btn.classList.remove("flex");
+        }
+      }, { passive: true });
+    })();
+
+    // Inicialización: todo contraído por defecto
+    renderAll();
+  </script>
+</body>
+</html>
