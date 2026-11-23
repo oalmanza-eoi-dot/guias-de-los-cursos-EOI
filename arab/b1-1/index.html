@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Programa de curso B1.1 — Año académico 2026-27 (ÁRABE)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root {
+      --eoi-magenta: #B51748;
+      --eoi-magenta-dark: #8F1138;
+      --eoi-magenta-deeper: #6D0B2A;
+      --eoi-magenta-soft: #FBF3F6;
+      --eoi-magenta-border: #E6C7D1;
+    }
+
+    body {
+      background-color: #F7F6F7;
+      color: #1E293B;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    .eoi-bg-primary { background-color: var(--eoi-magenta); }
+    .eoi-bg-primary:hover { background-color: var(--eoi-magenta-dark); }
+    .eoi-text-primary { color: var(--eoi-magenta); }
+    .eoi-text-deep { color: var(--eoi-magenta-deeper); }
+    .eoi-border-primary { border-color: var(--eoi-magenta); }
+    .eoi-border-soft { border-color: var(--eoi-magenta-border); }
+    .eoi-bg-soft { background-color: var(--eoi-magenta-soft); }
+
+    .chevron-icon {
+      transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .is-open > button .chevron-icon {
+      transform: rotate(180deg);
+    }
+
+    .accordion-collapse {
+      display: grid;
+      grid-template-rows: 0fr;
+      opacity: 0;
+      transition:
+        grid-template-rows 0.34s cubic-bezier(0.22, 1, 0.36, 1),
+        opacity 0.24s ease;
+    }
+    .accordion-collapse.is-expanded {
+      grid-template-rows: 1fr;
+      opacity: 1;
+    }
+    .accordion-inner {
+      overflow: hidden;
+    }
+
+    .ar-script {
+      font-family: "Noto Naskh Arabic", "Amiri", "Geeza Pro", "Tahoma", sans-serif;
+      font-size: 1.08em;
+      font-weight: 700;
+      color: #0F172A;
+    }
+
+    @keyframes fadeSlideUp {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .animate-enter {
+      animation: fadeSlideUp 0.42s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+  <div class="mx-auto w-full max-w-5xl flex-1 px-4 py-6 sm:px-6 lg:px-8">
+
+    <!-- Cabecera institucional -->
+    <header class="animate-enter rounded-2xl border eoi-border-soft bg-white p-5 shadow-sm sm:p-7">
+      <div class="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
+
+        <!-- Logotipo oficial -->
+        <div class="flex w-full shrink-0 items-center justify-center sm:w-52">
+          <img
+            src="../../eoicert.jpg"
+            alt="Logotipo Escola Oficial d'Idiomes de Barcelona"
+            style="max-height: 108px; max-width: 100%; width: auto; height: auto; object-fit: contain;"
+            onerror="this.style.display='none'; document.getElementById('logo-fallback').classList.remove('hidden');"
+          />
+          <div id="logo-fallback" class="hidden flex items-center gap-3 rounded-xl border eoi-border-soft eoi-bg-soft px-4 py-3">
+            <span class="flex h-11 w-11 items-center justify-center rounded-full eoi-bg-primary text-xl font-extrabold text-white">eoi</span>
+            <div class="text-left leading-tight">
+              <div class="text-xs font-bold uppercase tracking-wider eoi-text-primary">barcelona</div>
+              <div class="text-xs font-bold uppercase tracking-wider eoi-text-primary">drassanes</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Título y controles superiores -->
+        <div class="flex-1 sm:pl-2">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <p class="text-xs font-bold uppercase tracking-widest eoi-text-primary">
+              ESCOLA OFICIAL D'IDIOMES · EOI BARCELONA DRASSANES
+            </p>
+
+            <div class="flex flex-wrap items-center gap-2">
+              <a
+                href="../../"
+                class="inline-flex items-center gap-1.5 rounded-full border eoi-border-soft eoi-bg-soft px-3 py-1 text-xs font-bold eoi-text-primary transition hover:border-[#B51748] hover:bg-[#F5E1E7]"
+              >
+                <span>←</span>
+                <span id="back-link-text">Guías de los cursos</span>
+              </a>
+
+              <!-- Selector Castellano / Català -->
+              <div class="inline-flex rounded-full border border-slate-200 bg-slate-100/80 p-0.5" role="group" aria-label="Selector de idioma">
+                <button
+                  type="button"
+                  id="lang-btn-es"
+                  onclick="setUILang('es')"
+                  class="rounded-full px-3 py-1 text-xs font-bold transition-all duration-200 eoi-bg-primary text-white shadow-xs"
+                >
+                  Castellano
+                </button>
+                <button
+                  type="button"
+                  id="lang-btn-ca"
+                  onclick="setUILang('ca')"
+                  class="rounded-full px-3 py-1 text-xs font-bold text-slate-600 transition-all duration-200 hover:text-[#B51748]"
+                >
+                  Català
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <h1 id="page-title" class="mt-2.5 text-2xl font-extrabold tracking-tight eoi-text-deep sm:text-3xl">
+            Programa de curso B1.1 — Año académico 2026-27 (ÁRABE)
+          </h1>
+          <p id="page-subtitle" class="mt-2 text-sm leading-relaxed text-slate-600">
+            Guía de referencia del Nivel Intermedio B1.1 con estructura desplegable para consultar los objetivos, textos escritos y orales, léxico, gramática y sistema de evaluación.
+          </p>
+        </div>
+      </div>
+
+      <!-- Barra de controles de acordeón -->
+      <div class="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-slate-200/80 pt-4">
+        <div class="flex flex-wrap items-center gap-2.5">
+          <button
+            type="button"
+            onclick="expandAll()"
+            class="inline-flex items-center gap-2 rounded-xl eoi-bg-primary px-4 py-2 text-xs font-bold text-white shadow-xs transition active:scale-95 sm:text-sm"
+          >
+            <span>↕</span>
+            <span id="btn-expand-text">Expandir todo</span>
+          </button>
+          <button
+            type="button"
+            onclick="collapseAll()"
+            class="inline-flex items-center gap-2 rounded-xl border eoi-border-soft bg-white px-4 py-2 text-xs font-bold eoi-text-deep transition hover:bg-[#FBF3F6] active:scale-95 sm:text-sm"
+          >
+            <span>⤒</span>
+            <span id="btn-collapse-text">Contraer todo</span>
+          </button>
+        </div>
+        <p id="accordion-status" class="text-xs font-semibold eoi-text-primary">
+          Todas las secciones principales contraídas
+        </p>
+      </div>
+    </header>
+
+    <!-- Secciones desplegables del programa -->
+    <main id="sections-container" class="mt-6 space-y-3.5">
+      <!-- Renderizado dinámico según idioma -->
+    </main>
+
+  </div>
+
+  <!-- Pie institucional -->
+  <footer class="mx-auto w-full max-w-5xl px-4 pb-8 pt-2 sm:px-6 lg:px-8">
+    <div class="rounded-2xl border eoi-border-soft bg-white px-5 py-4 text-center text-xs text-slate-600 shadow-xs">
+      <p class="font-bold eoi-text-deep">Escola Oficial d'Idiomes · EOI Barcelona Drassanes</p>
+      <p class="mt-1">
+        Av. Drassanes, 14 · 08001 Barcelona · Tel. 93 324 93 30 · Fax 93 324 93 51 ·
+        <a href="https://www.eoibd.cat" target="_blank" rel="noopener noreferrer" class="font-semibold eoi-text-primary underline decoration-[#D49AA9] underline-offset-2 hover:opacity-80">www.eoibd.cat</a>
+      </p>
+    </div>
+  </footer>
+
+  <!-- Botón flotante permanente para volver arriba -->
+  <button
+    id="btn-volver-arriba"
+    type="button"
+    aria-label="Volver arriba"
+    onclick="window.scrollTo({ top: 0, behavior: 'smooth' })"
+    class="fixed bottom-5 right-5 z-50 translate-y-4 opacity-0 pointer-events-none flex items-center gap-1.5 rounded-full eoi-bg-primary px-4 py-2.5 text-sm font-bold text-white shadow-lg transition-all duration-300 hover:-translate-y-0.5 active:scale-95 focus:outline-none focus:ring-2 focus:ring-[#B51748]/40"
+  >
+    <span>↑</span>
+    <span id="btn-top-text">Arriba</span>
+  </button>
+
+  <script>
+    const COURSE_DATA = {"docTitle": {"es": "Programa de curso B1.1 — Año académico 2026-27 (ÁRABE)", "ca": "Programa de curs B1.1 — Any acadèmic 2026-27 (ÀRAB)"}, "title": {"es": "Programa de curso B1.1 — Año académico 2026-27 (ÁRABE)", "ca": "Programa de curs B1.1 — Any acadèmic 2026-27 (ÀRAB)"}, "subtitle": {"es": "Guía de referencia del Nivel Intermedio B1.1 con estructura desplegable para consultar los objetivos, textos escritos y orales, léxico, gramática y sistema de evaluación.", "ca": "Guia de referència del Nivell Intermedi B1.1 amb estructura desplegable per consultar els objectius, textos escrits i orals, lèxic, gramàtica i sistema d’avaluació."}, "sections": {"es": [{"title": "Objetivos", "html": "<ul class=\"space-y-2\"><li class=\"flex items-start gap-2.5\"><span class=\"mt-2 h-1.5 w-1.5 shrink-0 rounded-full eoi-bg-primary\"></span><span>Utilizar el idioma como medio de comunicación en situaciones de la vida cotidiana.</span></li><li class=\"flex items-start gap-2.5\"><span class=\"mt-2 h-1.5 w-1.5 shrink-0 rounded-full eoi-bg-primary\"></span><span>Utilizar las experiencias y conocimientos previos, tanto lingüísticos como socioculturales, como base para construir el aprendizaje de la nueva lengua.</span></li><li class=\"flex items-start gap-2.5\"><span class=\"mt-2 h-1.5 w-1.5 shrink-0 rounded-full eoi-bg-primary\"></span><span>Optimizar todas las ocasiones posibles de exposición e interacción con la nueva lengua.</span></li><li class=\"flex items-start gap-2.5\"><span class=\"mt-2 h-1.5 w-1.5 shrink-0 rounded-full eoi-bg-primary\"></span><span>Controlar el propio proceso de aprendizaje de la lengua.</span></li><li class=\"flex items-start gap-2.5\"><span class=\"mt-2 h-1.5 w-1.5 shrink-0 rounded-full eoi-bg-primary\"></span><span>Desarrollar y utilizar las estrategias que permitan evaluar el primer estadio del aprendizaje del idioma.</span></li><li class=\"flex items-start gap-2.5\"><span class=\"mt-2 h-1.5 w-1.5 shrink-0 rounded-full eoi-bg-primary\"></span><span>Adoptar una actitud abierta ante elementos o situaciones no características de la lengua propia que aparezcan en el discurso.</span></li></ul>"}, {"title": "Textos escritos y orales", "html": "<ul class=\"space-y-2\"><li class=\"flex items-start gap-2.5\"><span class=\"mt-2 h-1.5 w-1.5 shrink-0 rounded-full eoi-bg-primary\"></span><span>Rellenar formularios con datos personales; por ejemplo, el nombre, la nacionalidad y la dirección en una ficha de registro de hotel.</span></li><li class=\"flex items-start gap-2.5\"><span class=\"mt-2 h-1.5 w-1.5 shrink-0 rounded-full eoi-bg-primary\"></span><span>Describir lugares, pedir y dar consejos para viajar, para ir a un sitio, para utilizar un aparato... Explicar qué se ha hecho en las vacaciones y contrastar rutinas.</span></li><li class=\"flex items-start gap-2.5\"><span class=\"mt-2 h-1.5 w-1.5 shrink-0 rounded-full eoi-bg-primary\"></span><span>Comunicarse de manera coherente y comprensible en situaciones cotidianas y de aprendizaje; conversaciones telefónicas formales para pedir información o concretar citas.</span></li><li class=\"flex items-start gap-2.5\"><span class=\"mt-2 h-1.5 w-1.5 shrink-0 rounded-full eoi-bg-primary\"></span><span>Iniciar y mantener conversaciones en lengua estándar, sobre temas generales o de interés personal o relacionados con su trabajo y el tiempo libre.</span></li><li class=\"flex items-start gap-2.5\"><span class=\"mt-2 h-1.5 w-1.5 shrink-0 rounded-full eoi-bg-primary\"></span><span>Hacer presentaciones sencillas y preparadas sobre diferentes temas guiadas por el profesor.</span></li><li class=\"flex items-start gap-2.5\"><span class=\"mt-2 h-1.5 w-1.5 shrink-0 rounded-full eoi-bg-primary\"></span><span>Comprender las ideas principales de los textos escritos que utilizan un lenguaje muy habitual y cotidiano o que está relacionado con diferentes temas y localizar información específica en textos de diversa longitud y tipología sobre temas generales.</span></li><li class=\"flex items-start gap-2.5\"><span class=\"mt-2 h-1.5 w-1.5 shrink-0 rounded-full eoi-bg-primary\"></span><span>Escribir textos cortos y bien cohesionados sobre hechos y acontecimientos que traten una variedad de temas generales familiares o de interés personal.</span></li><li class=\"flex items-start gap-2.5\"><span class=\"mt-2 h-1.5 w-1.5 shrink-0 rounded-full eoi-bg-primary\"></span><span>Escribir cartas y correos electrónicos personales informales que describen experiencias e impresiones, siguiendo las convenciones y formatos adecuados.</span></li><li class=\"flex items-start gap-2.5\"><span class=\"mt-2 h-1.5 w-1.5 shrink-0 rounded-full eoi-bg-primary\"></span><span>Comprender el mensaje general, las ideas principales y los detalles fácilmente identificables en textos orales, a velocidad normal en conversaciones cara a cara.</span></li><li class=\"flex items-start gap-2.5\"><span class=\"mt-2 h-1.5 w-1.5 shrink-0 rounded-full eoi-bg-primary\"></span><span>Comprender lo esencial de textos orales emitidos por los medios de comunicación.</span></li></ul>"}, {"title": "Contenidos lingüísticos (Léxico y Gramática)", "html": "<div class=\"space-y-3\"><div id=\"sub-ar-b11-lex\" data-accordion-item class=\"rounded-xl border eoi-border-soft bg-[#FBF3F6]/60 overflow-hidden\">\n      <button type=\"button\" aria-expanded=\"false\" onclick=\"toggleAccordion('sub-ar-b11-lex')\" class=\"flex w-full items-center justify-between gap-3 px-4 py-3 text-left transition hover:bg-[#FBF3F6]\">\n        <span class=\"text-xs font-extrabold uppercase tracking-wider eoi-text-deep sm:text-sm\">Léxico</span>\n        <svg class=\"chevron-icon h-4 w-4 shrink-0 eoi-text-primary\" xmlns=\"http://www.w3.org/2000/svg\" fill=\"none\" viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"2.5\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M19 9l-7 7-7-7\" /></svg>\n      </button>\n      <div id=\"sub-ar-b11-lex-body\" class=\"accordion-collapse\">\n        <div class=\"accordion-inner\">\n          <div class=\"border-t border-slate-200/80 bg-white px-4 py-4\"><ul class=\"space-y-2\"><li class=\"flex items-start gap-2.5\"><span class=\"mt-2 h-1.5 w-1.5 shrink-0 rounded-full eoi-bg-primary\"></span><span>Léxico para describir el entorno geográfico.</span></li><li class=\"flex items-start gap-2.5\"><span class=\"mt-2 h-1.5 w-1.5 shrink-0 rounded-full eoi-bg-primary\"></span><span>Léxico para dar indicaciones para ir a un lugar.</span></li><li class=\"flex items-start gap-2.5\"><span class=\"mt-2 h-1.5 w-1.5 shrink-0 rounded-full eoi-bg-primary\"></span><span>Léxico relacionado con los viajes.</span></li><li class=\"flex items-start gap-2.5\"><span class=\"mt-2 h-1.5 w-1.5 shrink-0 rounded-full eoi-bg-primary\"></span><span>Adjetivos relacionados con la manera de ser de las personas.</span></li><li class=\"flex items-start gap-2.5\"><span class=\"mt-2 h-1.5 w-1.5 shrink-0 rounded-full eoi-bg-primary\"></span><span>Léxico relacionado con el sector inmobiliario, con la vivienda y con la decoración del hogar.</span></li><li class=\"flex items-start gap-2.5\"><span class=\"mt-2 h-1.5 w-1.5 shrink-0 rounded-full eoi-bg-primary\"></span><span>Léxico relacionado con las comidas, la cocina y el menaje de mesa.</span></li><li class=\"flex items-start gap-2.5\"><span class=\"mt-2 h-1.5 w-1.5 shrink-0 rounded-full eoi-bg-primary\"></span><span>Léxico relacionado con las averías de los aparatos.</span></li><li class=\"flex items-start gap-2.5\"><span class=\"mt-2 h-1.5 w-1.5 shrink-0 rounded-full eoi-bg-primary\"></span><span>Expresiones para expresar esperanza, alivio, confianza, seguridad, inseguridad, arrepentimiento...</span></li><li class=\"flex items-start gap-2.5\"><span class=\"mt-2 h-1.5 w-1.5 shrink-0 rounded-full eoi-bg-primary\"></span><span>Léxico relacionado con la política.</span></li><li class=\"flex items-start gap-2.5\"><span class=\"mt-2 h-1.5 w-1.5 shrink-0 rounded-full eoi-bg-primary\"></span><span>Léxico relacionado con los sentimientos y sensaciones físicas.</span></li></ul></div>\n        </div>\n      </div>\n    </div><div id=\"sub-ar-b11-gram\" data-accordion-item class=\"rounded-xl border eoi-border-soft bg-[#FBF3F6]/60 overflow-hidden\">\n      <button type=\"button\" aria-expanded=\"false\" onclick=\"toggleAccordion('sub-ar-b11-gram')\" class=\"flex w-full items-center justify-between gap-3 px-4 py-3 text-left transition hover:bg-[#FBF3F6]\">\n        <span class=\"text-xs font-extrabold uppercase tracking-wider eoi-text-deep sm:text-sm\">Gramática</span>\n        <svg class=\"chevron-icon h-4 w-4 shrink-0 eoi-text-primary\" xmlns=\"http://www.w3.org/2000/svg\" fill=\"none\" viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"2.5\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M19 9l-7 7-7-7\" /></svg>\n      </button>\n      <div id=\"sub-ar-b11-gram-body\" class=\"accordion-collapse\">\n        <div class=\"accordion-inner\">\n          <div class=\"border-t border-slate-200/80 bg-white px-4 py-4\"><ul class=\"space-y-2\"><li class=\"flex items-start gap-2.5\"><span class=\"mt-2 h-1.5 w-1.5 shrink-0 rounded-full eoi-bg-primary\"></span><span><span dir=\"rtl\" lang=\"ar\" class=\"ar-script\">النفي والنهي</span> <span class=\"text-slate-600\">— La negación y la prohibición</span></span></li><li class=\"flex items-start gap-2.5\"><span class=\"mt-2 h-1.5 w-1.5 shrink-0 rounded-full eoi-bg-primary\"></span><span><span dir=\"rtl\" lang=\"ar\" class=\"ar-script\">جمع المذكر والمؤنث السالمين وجمع التكسير</span> <span class=\"text-slate-600\">— El plural regular masculino y femenino y el plural fracto</span></span></li><li class=\"flex items-start gap-2.5\"><span class=\"mt-2 h-1.5 w-1.5 shrink-0 rounded-full eoi-bg-primary\"></span><span><span dir=\"rtl\" lang=\"ar\" class=\"ar-script\">الاسم الموصول</span> <span class=\"text-slate-600\">— El pronombre relativo</span></span></li><li class=\"flex items-start gap-2.5\"><span class=\"mt-2 h-1.5 w-1.5 shrink-0 rounded-full eoi-bg-primary\"></span><span><span dir=\"rtl\" lang=\"ar\" class=\"ar-script\">العدد والمعدود</span> <span class=\"text-slate-600\">— El numeral y lo contado</span></span></li><li class=\"flex items-start gap-2.5\"><span class=\"mt-2 h-1.5 w-1.5 shrink-0 rounded-full eoi-bg-primary\"></span><span><span dir=\"rtl\" lang=\"ar\" class=\"ar-script\">أسماء الاستفهام</span> <span class=\"text-slate-600\">— Los pronombres interrogativos</span></span></li><li class=\"flex items-start gap-2.5\"><span class=\"mt-2 h-1.5 w-1.5 shrink-0 rounded-full eoi-bg-primary\"></span><span><span dir=\"rtl\" lang=\"ar\" class=\"ar-script\">النعت والمنعوت</span> <span class=\"text-slate-600\">— El adjetivo y el sustantivo calificado</span></span></li><li class=\"flex items-start gap-2.5\"><span class=\"mt-2 h-1.5 w-1.5 shrink-0 rounded-full eoi-bg-primary\"></span><span><span dir=\"rtl\" lang=\"ar\" class=\"ar-script\">اسم التفضيل</span> <span class=\"text-slate-600\">— El elativo (comparativo y superlativo)</span></span></li><li class=\"flex items-start gap-2.5\"><span class=\"mt-2 h-1.5 w-1.5 shrink-0 rounded-full eoi-bg-primary\"></span><span><span dir=\"rtl\" lang=\"ar\" class=\"ar-script\">الفعل الثلاثي المجرد والمزيد</span> <span class=\"text-slate-600\">— El verbo trilítero simple y derivado</span></span></li><li class=\"flex items-start gap-2.5\"><span class=\"mt-2 h-1.5 w-1.5 shrink-0 rounded-full eoi-bg-primary\"></span><span><span dir=\"rtl\" lang=\"ar\" class=\"ar-script\">إنّ وأخواتها</span> <span class=\"text-slate-600\">— Inna y sus hermanas</span></span></li><li class=\"flex items-start gap-2.5\"><span class=\"mt-2 h-1.5 w-1.5 shrink-0 rounded-full eoi-bg-primary\"></span><span><span dir=\"rtl\" lang=\"ar\" class=\"ar-script\">الفعل الصحيح والمعتل</span> <span class=\"text-slate-600\">— El verbo sano y el verbo débil</span></span></li><li class=\"flex items-start gap-2.5\"><span class=\"mt-2 h-1.5 w-1.5 shrink-0 rounded-full eoi-bg-primary\"></span><span><span dir=\"rtl\" lang=\"ar\" class=\"ar-script\">الفعل الرباعي</span> <span class=\"text-slate-600\">— El verbo cuadrilítero</span></span></li><li class=\"flex items-start gap-2.5\"><span class=\"mt-2 h-1.5 w-1.5 shrink-0 rounded-full eoi-bg-primary\"></span><span><span dir=\"rtl\" lang=\"ar\" class=\"ar-script\">المصدر</span> <span class=\"text-slate-600\">— El nombre verbal (maṣdar)</span></span></li><li class=\"flex items-start gap-2.5\"><span class=\"mt-2 h-1.5 w-1.5 shrink-0 rounded-full eoi-bg-primary\"></span><span><span dir=\"rtl\" lang=\"ar\" class=\"ar-script\">اسم الفاعل واسم المفعول</span> <span class=\"text-slate-600\">— El participio activo y el participio pasivo</span></span></li><li class=\"flex items-start gap-2.5\"><span class=\"mt-2 h-1.5 w-1.5 shrink-0 rounded-full eoi-bg-primary\"></span><span><span dir=\"rtl\" lang=\"ar\" class=\"ar-script\">حروف الجر والعطف</span> <span class=\"text-slate-600\">— Preposiciones y conjunciones</span></span></li><li class=\"flex items-start gap-2.5\"><span class=\"mt-2 h-1.5 w-1.5 shrink-0 rounded-full eoi-bg-primary\"></span><span><span dir=\"rtl\" lang=\"ar\" class=\"ar-script\">أدوات الربط</span> <span class=\"text-slate-600\">— Conectores discursivos</span></span></li><li class=\"flex items-start gap-2.5\"><span class=\"mt-2 h-1.5 w-1.5 shrink-0 rounded-full eoi-bg-primary\"></span><span><span dir=\"rtl\" lang=\"ar\" class=\"ar-script\">كان وأخواتها</span> <span class=\"text-slate-600\">— Kāna y sus hermanas</span></span></li><li class=\"flex items-start gap-2.5\"><span class=\"mt-2 h-1.5 w-1.5 shrink-0 rounded-full eoi-bg-primary\"></span><span><span dir=\"rtl\" lang=\"ar\" class=\"ar-script\">الجملة الاسمية والجملة الفعلية</span> <span class=\"text-slate-600\">— La oración nominal y la oración verbal</span></span></li><li class=\"flex items-start gap-2.5\"><span class=\"mt-2 h-1.5 w-1.5 shrink-0 rounded-full eoi-bg-primary\"></span><span><span dir=\"rtl\" lang=\"ar\" class=\"ar-script\">كتابة الهمزة</span> <span class=\"text-slate-600\">— Ortografía de la hamza</span></span></li></ul></div>\n        </div>\n      </div>\n    </div></div>"}, {"title": "Sistema de evaluación en el nivel B1.1", "html": "<div class=\"space-y-5\"><div><h3 class=\"text-sm font-extrabold eoi-text-deep mb-2\">Consideraciones generales</h3><div class=\"space-y-2 text-slate-700\"><p>La evaluación de este curso se basará en la adquisición inicial de las competencias descritas en el currículo del nivel Intermedio B1 que se encuentra en el <strong>DECRETO 45/2022, de 15 de marzo</strong>.</p><p>De acuerdo con el currículo actual del Departamento de Educación para las escuelas oficiales de idiomas, «La evaluación del proceso de aprendizaje de los alumnos oficiales de las modalidades presencial y semipresencial ha de ser continua y sistemática, globalizada, integradora y personalizada, con el fin de valorar su progreso y contrastar los objetivos establecidos con los resultados obtenidos».</p><p>La evaluación continua da una importancia fundamental al intercambio continuo de información sobre el proceso de aprendizaje entre profesorado y alumnado, ya que este aspecto se considera una herramienta de formación imprescindible.</p><p>La evaluación se basará en la adquisición de las competencias descritas para este nivel y curso.</p></div></div><div><h3 class=\"text-sm font-extrabold eoi-text-deep mb-2\">Criterios e instrumentos que se valorarán durante la evaluación continua</h3><div class=\"space-y-2 text-slate-700\"><p>La adquisición de las competencias descritas para cada curso se evaluará mediante tareas orales o escritas basadas en situaciones reales de uso de la lengua.</p><p>También se podrán utilizar otros instrumentos complementarios (como actividades de reflexión, pruebas breves o autoevaluaciones) para obtener una visión más completa del aprendizaje y garantizar que el progreso sea adecuado.</p><p>Las rúbricas y criterios de evaluación de cada tarea se darán a conocer antes de cada evaluación.</p><p>A través de la evaluación de estas tareas escritas y orales, se determinará la adquisición de los contenidos mínimos del curso y se emitirá una calificación final de <strong>APTO/A</strong> o <strong>NO APTO/A</strong>.</p></div></div><div class=\"rounded-xl border eoi-border-soft bg-[#FBF3F6]/70 p-4 \"><h3 class=\"mb-2.5 text-xs font-extrabold uppercase tracking-wider eoi-text-deep sm:text-sm\">Examen de convocatoria única</h3><p>En caso de ausencia prolongada o asistencia irregular al curso, cuando no haya sido posible obtener una calificación a través de las tareas evaluativas, la evaluación se realizará mediante un examen de convocatoria única al finalizar el curso.</p></div><div><h3 class=\"text-sm font-extrabold eoi-text-deep mb-2\">Calificaciones</h3><p class=\"mb-2.5 text-slate-700\">Las calificaciones finales pueden ser:</p><div class=\"overflow-x-auto rounded-xl border eoi-border-soft\">\n      <table class=\"w-full text-left text-xs sm:text-sm\">\n        <thead class=\"eoi-bg-primary text-white\"><tr><th class=\"px-4 py-2.5 font-bold\">Calificación final</th><th class=\"px-4 py-2.5 font-bold\">Descripción</th></tr></thead>\n        <tbody class=\"divide-y divide-slate-200/70 bg-white\">\n          <tr><td class=\"whitespace-nowrap px-4 py-2.5 font-extrabold eoi-text-deep\">APTO/A</td><td class=\"px-4 py-2.5 text-slate-700\">Superación del nivel según los criterios establecidos.</td></tr>\n          <tr><td class=\"whitespace-nowrap px-4 py-2.5 font-extrabold eoi-text-deep\">NO APTO/A</td><td class=\"px-4 py-2.5 text-slate-700\">No superación del nivel en la evaluación correspondiente.</td></tr>\n          <tr><td class=\"whitespace-nowrap px-4 py-2.5 font-extrabold eoi-text-deep\">NP</td><td class=\"px-4 py-2.5 text-slate-700\">No presentado/a, si no se ha presentado a ninguna de las partes.</td></tr>\n        </tbody>\n      </table>\n    </div><p class=\"mt-2.5 text-slate-700\">Se proporcionará al alumnado información sobre el nivel alcanzado en las distintas habilidades y subcompetencias.</p></div><div class=\"rounded-xl border eoi-border-soft eoi-bg-soft p-4\"><h3 class=\"text-sm font-extrabold eoi-text-deep\">Calendario escolar</h3><p class=\"mt-1 text-slate-700\">Podéis consultar o imprimir el calendario escolar <a href=\"https://www.eoibd.cat/calendari-escolar\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"font-bold eoi-text-primary underline decoration-[#D49AA9] underline-offset-4 hover:opacity-80\">aquí</a>.</p></div><div class=\"rounded-xl border border-amber-200 bg-amber-50/70 p-4\"><h3 class=\"text-sm font-extrabold text-amber-900 mb-2\">Observaciones importantes</h3><ol class=\"list-decimal space-y-2 pl-5 text-slate-700\"><li>Los departamentos pueden programar exámenes o pruebas de asistencia obligatoria en fechas posteriores al último día de clase.</li><li>En caso de necesidad y por causas debidamente justificadas, la Escuela podrá modificar la fecha de finalización de las clases.</li></ol></div></div>"}], "ca": [{"title": "Objectius", "html": "<ul class=\"space-y-2\"><li class=\"flex items-start gap-2.5\"><span class=\"mt-2 h-1.5 w-1.5 shrink-0 rounded-full eoi-bg-primary\"></span><span>Utilitzar l’idioma com a mitjà de comunicació en situacions de la vida quotidiana.</span></li><li class=\"flex items-start gap-2.5\"><span class=\"mt-2 h-1.5 w-1.5 shrink-0 rounded-full eoi-bg-primary\"></span><span>Utilitzar les experiències i coneixements previs, tant lingüístics com socioculturals, com a base per construir l’aprenentatge de la nova llengua.</span></li><li class=\"flex items-start gap-2.5\"><span class=\"mt-2 h-1.5 w-1.5 shrink-0 rounded-full eoi-bg-primary\"></span><span>Optimitzar totes les ocasions possibles d’exposició i interacció amb la nova llengua.</span></li><li class=\"flex items-start gap-2.5\"><span class=\"mt-2 h-1.5 w-1.5 shrink-0 rounded-full eoi-bg-primary\"></span><span>Controlar el propi procés d’aprenentatge de la llengua.</span></li><li class=\"flex items-start gap-2.5\"><span class=\"mt-2 h-1.5 w-1.5 shrink-0 rounded-full eoi-bg-primary\"></span><span>Desenvolupar i utilitzar les estratègies que permetin avaluar el primer estadi de l’aprenentatge de l’idioma.</span></li><li class=\"flex items-start gap-2.5\"><span class=\"mt-2 h-1.5 w-1.5 shrink-0 rounded-full eoi-bg-primary\"></span><span>Adoptar una actitud oberta davant d’elements o situacions no característiques de la llengua pròpia que apareguin en el discurs.</span></li></ul>"}, {"title": "Textos escrits i orals", "html": "<ul class=\"space-y-2\"><li class=\"flex items-start gap-2.5\"><span class=\"mt-2 h-1.5 w-1.5 shrink-0 rounded-full eoi-bg-primary\"></span><span>Emplenar formularis amb dades personals; per exemple, el nom, la nacionalitat i l’adreça en una fitxa de registre d’hotel.</span></li><li class=\"flex items-start gap-2.5\"><span class=\"mt-2 h-1.5 w-1.5 shrink-0 rounded-full eoi-bg-primary\"></span><span>Descriure llocs, demanar i donar consells per viatjar, per anar a un lloc, per fer servir un aparell... Explicar què s’ha fet a les vacances i contrastar rutines.</span></li><li class=\"flex items-start gap-2.5\"><span class=\"mt-2 h-1.5 w-1.5 shrink-0 rounded-full eoi-bg-primary\"></span><span>Comunicar-se de manera coherent i entenedora en situacions quotidianes i d’aprenentatge; converses telefòniques formals per demanar informació o concretar cites.</span></li><li class=\"flex items-start gap-2.5\"><span class=\"mt-2 h-1.5 w-1.5 shrink-0 rounded-full eoi-bg-primary\"></span><span>Iniciar i mantenir converses en llengua estàndard, sobre temes generals o d’interès personal o relacionats amb la seva feina i el temps de lleure.</span></li><li class=\"flex items-start gap-2.5\"><span class=\"mt-2 h-1.5 w-1.5 shrink-0 rounded-full eoi-bg-primary\"></span><span>Fer presentacions senzilles i preparades sobre diferents temes guiades pel professor.</span></li><li class=\"flex items-start gap-2.5\"><span class=\"mt-2 h-1.5 w-1.5 shrink-0 rounded-full eoi-bg-primary\"></span><span>Comprendre les idees principals dels textos escrits que utilitzen un llenguatge molt habitual i quotidià o que està relacionat amb diferents temes i localitzar informació específica en textos de diversa longitud i tipologia sobre temes generals.</span></li><li class=\"flex items-start gap-2.5\"><span class=\"mt-2 h-1.5 w-1.5 shrink-0 rounded-full eoi-bg-primary\"></span><span>Escriure textos curts i ben cohesionats sobre fets i esdeveniments que tractin una varietat de temes generals familiars o d’interès personal.</span></li><li class=\"flex items-start gap-2.5\"><span class=\"mt-2 h-1.5 w-1.5 shrink-0 rounded-full eoi-bg-primary\"></span><span>Escriure cartes i correus electrònics personals informals que descriuen experiències i impressions, seguint les convencions i formats adequats.</span></li><li class=\"flex items-start gap-2.5\"><span class=\"mt-2 h-1.5 w-1.5 shrink-0 rounded-full eoi-bg-primary\"></span><span>Comprendre el missatge general, les idees principals i els detalls fàcilment identificables en textos orals, a velocitat normal en converses cara a cara.</span></li><li class=\"flex items-start gap-2.5\"><span class=\"mt-2 h-1.5 w-1.5 shrink-0 rounded-full eoi-bg-primary\"></span><span>Comprendre l’essencial de textos orals emesos pels mitjans de comunicació.</span></li></ul>"}, {"title": "Continguts lingüístics (Lèxic i Gramàtica)", "html": "<div class=\"space-y-3\"><div id=\"sub-ar-b11-lex\" data-accordion-item class=\"rounded-xl border eoi-border-soft bg-[#FBF3F6]/60 overflow-hidden\">\n      <button type=\"button\" aria-expanded=\"false\" onclick=\"toggleAccordion('sub-ar-b11-lex')\" class=\"flex w-full items-center justify-between gap-3 px-4 py-3 text-left transition hover:bg-[#FBF3F6]\">\n        <span class=\"text-xs font-extrabold uppercase tracking-wider eoi-text-deep sm:text-sm\">Lèxic</span>\n        <svg class=\"chevron-icon h-4 w-4 shrink-0 eoi-text-primary\" xmlns=\"http://www.w3.org/2000/svg\" fill=\"none\" viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"2.5\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M19 9l-7 7-7-7\" /></svg>\n      </button>\n      <div id=\"sub-ar-b11-lex-body\" class=\"accordion-collapse\">\n        <div class=\"accordion-inner\">\n          <div class=\"border-t border-slate-200/80 bg-white px-4 py-4\"><ul class=\"space-y-2\"><li class=\"flex items-start gap-2.5\"><span class=\"mt-2 h-1.5 w-1.5 shrink-0 rounded-full eoi-bg-primary\"></span><span>Lèxic per descriure l’entorn geogràfic.</span></li><li class=\"flex items-start gap-2.5\"><span class=\"mt-2 h-1.5 w-1.5 shrink-0 rounded-full eoi-bg-primary\"></span><span>Lèxic per donar indicacions per anar a un lloc.</span></li><li class=\"flex items-start gap-2.5\"><span class=\"mt-2 h-1.5 w-1.5 shrink-0 rounded-full eoi-bg-primary\"></span><span>Lèxic relacionat amb els viatges.</span></li><li class=\"flex items-start gap-2.5\"><span class=\"mt-2 h-1.5 w-1.5 shrink-0 rounded-full eoi-bg-primary\"></span><span>Adjectius relacionats amb la manera de ser de les persones.</span></li><li class=\"flex items-start gap-2.5\"><span class=\"mt-2 h-1.5 w-1.5 shrink-0 rounded-full eoi-bg-primary\"></span><span>Lèxic relacionat amb el sector immobiliari, amb l’habitatge i amb la decoració de la llar.</span></li><li class=\"flex items-start gap-2.5\"><span class=\"mt-2 h-1.5 w-1.5 shrink-0 rounded-full eoi-bg-primary\"></span><span>Lèxic relacionat amb els menjars, la cuina i el parament de taula.</span></li><li class=\"flex items-start gap-2.5\"><span class=\"mt-2 h-1.5 w-1.5 shrink-0 rounded-full eoi-bg-primary\"></span><span>Lèxic relacionat amb les avaries dels aparells.</span></li><li class=\"flex items-start gap-2.5\"><span class=\"mt-2 h-1.5 w-1.5 shrink-0 rounded-full eoi-bg-primary\"></span><span>Expressions per expressar esperança, alleujament, confiança, seguretat, inseguretat, penediment...</span></li><li class=\"flex items-start gap-2.5\"><span class=\"mt-2 h-1.5 w-1.5 shrink-0 rounded-full eoi-bg-primary\"></span><span>Lèxic relacionat amb la política.</span></li><li class=\"flex items-start gap-2.5\"><span class=\"mt-2 h-1.5 w-1.5 shrink-0 rounded-full eoi-bg-primary\"></span><span>Lèxic relacionat amb els sentiments, sensacions físiques.</span></li></ul></div>\n        </div>\n      </div>\n    </div><div id=\"sub-ar-b11-gram\" data-accordion-item class=\"rounded-xl border eoi-border-soft bg-[#FBF3F6]/60 overflow-hidden\">\n      <button type=\"button\" aria-expanded=\"false\" onclick=\"toggleAccordion('sub-ar-b11-gram')\" class=\"flex w-full items-center justify-between gap-3 px-4 py-3 text-left transition hover:bg-[#FBF3F6]\">\n        <span class=\"text-xs font-extrabold uppercase tracking-wider eoi-text-deep sm:text-sm\">Gramàtica</span>\n        <svg class=\"chevron-icon h-4 w-4 shrink-0 eoi-text-primary\" xmlns=\"http://www.w3.org/2000/svg\" fill=\"none\" viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"2.5\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M19 9l-7 7-7-7\" /></svg>\n      </button>\n      <div id=\"sub-ar-b11-gram-body\" class=\"accordion-collapse\">\n        <div class=\"accordion-inner\">\n          <div class=\"border-t border-slate-200/80 bg-white px-4 py-4\"><ul class=\"space-y-2\"><li class=\"flex items-start gap-2.5\"><span class=\"mt-2 h-1.5 w-1.5 shrink-0 rounded-full eoi-bg-primary\"></span><span><span dir=\"rtl\" lang=\"ar\" class=\"ar-script\">النفي والنهي</span> <span class=\"text-slate-600\">— La negació i la prohibició</span></span></li><li class=\"flex items-start gap-2.5\"><span class=\"mt-2 h-1.5 w-1.5 shrink-0 rounded-full eoi-bg-primary\"></span><span><span dir=\"rtl\" lang=\"ar\" class=\"ar-script\">جمع المذكر والمؤنث السالمين وجمع التكسير</span> <span class=\"text-slate-600\">— El plural regular masculí i femení i el plural fracte</span></span></li><li class=\"flex items-start gap-2.5\"><span class=\"mt-2 h-1.5 w-1.5 shrink-0 rounded-full eoi-bg-primary\"></span><span><span dir=\"rtl\" lang=\"ar\" class=\"ar-script\">الاسم الموصول</span> <span class=\"text-slate-600\">— El pronom relatiu</span></span></li><li class=\"flex items-start gap-2.5\"><span class=\"mt-2 h-1.5 w-1.5 shrink-0 rounded-full eoi-bg-primary\"></span><span><span dir=\"rtl\" lang=\"ar\" class=\"ar-script\">العدد والمعدود</span> <span class=\"text-slate-600\">— El numeral i el comptat</span></span></li><li class=\"flex items-start gap-2.5\"><span class=\"mt-2 h-1.5 w-1.5 shrink-0 rounded-full eoi-bg-primary\"></span><span><span dir=\"rtl\" lang=\"ar\" class=\"ar-script\">أسماء الاستفهام</span> <span class=\"text-slate-600\">— Els pronoms interrogatius</span></span></li><li class=\"flex items-start gap-2.5\"><span class=\"mt-2 h-1.5 w-1.5 shrink-0 rounded-full eoi-bg-primary\"></span><span><span dir=\"rtl\" lang=\"ar\" class=\"ar-script\">النعت والمنعوت</span> <span class=\"text-slate-600\">— L’adjectiu i el substantiu qualificat</span></span></li><li class=\"flex items-start gap-2.5\"><span class=\"mt-2 h-1.5 w-1.5 shrink-0 rounded-full eoi-bg-primary\"></span><span><span dir=\"rtl\" lang=\"ar\" class=\"ar-script\">اسم التفضيل</span> <span class=\"text-slate-600\">— L’elatiu (comparatiu i superlatiu)</span></span></li><li class=\"flex items-start gap-2.5\"><span class=\"mt-2 h-1.5 w-1.5 shrink-0 rounded-full eoi-bg-primary\"></span><span><span dir=\"rtl\" lang=\"ar\" class=\"ar-script\">الفعل الثلاثي المجرد والمزيد</span> <span class=\"text-slate-600\">— El verb trilíter simple i derivat</span></span></li><li class=\"flex items-start gap-2.5\"><span class=\"mt-2 h-1.5 w-1.5 shrink-0 rounded-full eoi-bg-primary\"></span><span><span dir=\"rtl\" lang=\"ar\" class=\"ar-script\">إنّ وأخواتها</span> <span class=\"text-slate-600\">— Inna i les seves germanes</span></span></li><li class=\"flex items-start gap-2.5\"><span class=\"mt-2 h-1.5 w-1.5 shrink-0 rounded-full eoi-bg-primary\"></span><span><span dir=\"rtl\" lang=\"ar\" class=\"ar-script\">الفعل الصحيح والمعتل</span> <span class=\"text-slate-600\">— El verb sa i el verb feble</span></span></li><li class=\"flex items-start gap-2.5\"><span class=\"mt-2 h-1.5 w-1.5 shrink-0 rounded-full eoi-bg-primary\"></span><span><span dir=\"rtl\" lang=\"ar\" class=\"ar-script\">الفعل الرباعي</span> <span class=\"text-slate-600\">— El verb quadrilíter</span></span></li><li class=\"flex items-start gap-2.5\"><span class=\"mt-2 h-1.5 w-1.5 shrink-0 rounded-full eoi-bg-primary\"></span><span><span dir=\"rtl\" lang=\"ar\" class=\"ar-script\">المصدر</span> <span class=\"text-slate-600\">— El nom verbal (maṣdar)</span></span></li><li class=\"flex items-start gap-2.5\"><span class=\"mt-2 h-1.5 w-1.5 shrink-0 rounded-full eoi-bg-primary\"></span><span><span dir=\"rtl\" lang=\"ar\" class=\"ar-script\">اسم الفاعل واسم المفعول</span> <span class=\"text-slate-600\">— El participi actiu i el participi passiu</span></span></li><li class=\"flex items-start gap-2.5\"><span class=\"mt-2 h-1.5 w-1.5 shrink-0 rounded-full eoi-bg-primary\"></span><span><span dir=\"rtl\" lang=\"ar\" class=\"ar-script\">حروف الجر والعطف</span> <span class=\"text-slate-600\">— Preposicions i conjuncions</span></span></li><li class=\"flex items-start gap-2.5\"><span class=\"mt-2 h-1.5 w-1.5 shrink-0 rounded-full eoi-bg-primary\"></span><span><span dir=\"rtl\" lang=\"ar\" class=\"ar-script\">أدوات الربط</span> <span class=\"text-slate-600\">— Connectors discursius</span></span></li><li class=\"flex items-start gap-2.5\"><span class=\"mt-2 h-1.5 w-1.5 shrink-0 rounded-full eoi-bg-primary\"></span><span><span dir=\"rtl\" lang=\"ar\" class=\"ar-script\">كان وأخواتها</span> <span class=\"text-slate-600\">— Kāna i les seves germanes</span></span></li><li class=\"flex items-start gap-2.5\"><span class=\"mt-2 h-1.5 w-1.5 shrink-0 rounded-full eoi-bg-primary\"></span><span><span dir=\"rtl\" lang=\"ar\" class=\"ar-script\">الجملة الاسمية والجملة الفعلية</span> <span class=\"text-slate-600\">— L’oració nominal i l’oració verbal</span></span></li><li class=\"flex items-start gap-2.5\"><span class=\"mt-2 h-1.5 w-1.5 shrink-0 rounded-full eoi-bg-primary\"></span><span><span dir=\"rtl\" lang=\"ar\" class=\"ar-script\">كتابة الهمزة</span> <span class=\"text-slate-600\">— Ortografia de la hamza</span></span></li></ul></div>\n        </div>\n      </div>\n    </div></div>"}, {"title": "Sistema d’avaluació al nivell B1.1", "html": "<div class=\"space-y-5\"><div><h3 class=\"text-sm font-extrabold eoi-text-deep mb-2\">Consideracions generals</h3><div class=\"space-y-2 text-slate-700\"><p>L’avaluació d’aquest curs es basarà en l’assoliment inicial de les competències descrites al currículum del nivell Intermedi B1 que es pot trobar al <strong>DECRET 45/2022, de 15 de març</strong>.</p><p>D’acord amb el currículum actual del Departament d’Educació per a les escoles oficials d’idiomes, «L’avaluació del procés d’aprenentatge dels i de les alumnes oficials de les modalitats presencial i semipresencial ha de ser contínua i sistemàtica, globalitzada, integradora i personalitzada, a fi de valorar el seu progrés i contrastar els objectius establerts amb els resultats obtinguts».</p><p>L’avaluació contínua dóna una importància cabdal a l’intercanvi continu d’informació sobre el procés d’aprenentatge entre professorat i alumnat, ja que aquest aspecte es considera una eina de formació imprescindible.</p><p>L’avaluació es basarà en l’assoliment de les competències descrites per a aquest nivell i curs.</p></div></div><div><h3 class=\"text-sm font-extrabold eoi-text-deep mb-2\">Criteris i instruments que es valoraran durant l’avaluació contínua</h3><div class=\"space-y-2 text-slate-700\"><p>L’assoliment de les competències descrites per a cada curs s’avaluaran per mitjà de tasques orals o escrites basades en situacions reals d’ús de la llengua.</p><p>També es podran utilitzar altres instruments complementaris (com activitats de reflexió, proves breus o autoavaluacions) per obtenir una visió més completa de l’aprenentatge i garantir que el progrés sigui adequat.</p><p>Les rúbriques i criteris d’avaluació de cada tasca es donaran a conèixer abans de cada avaluació.</p><p>A través de l’avaluació d’aquestes tasques escrites i orals, es determinarà l’assoliment dels continguts mínims del curs i s’emetrà una qualificació final d’<strong>APTE</strong> o <strong>NO APTE</strong>.</p></div></div><div class=\"rounded-xl border eoi-border-soft bg-[#FBF3F6]/70 p-4 \"><h3 class=\"mb-2.5 text-xs font-extrabold uppercase tracking-wider eoi-text-deep sm:text-sm\">Examen de convocatòria única</h3><p>En cas d’absència perllongada, o assistència irregular al curs, quan no hagi estat possible obtenir una qualificació a través de les tasques avaluatives, l’avaluació es farà a través d’un examen de convocatòria única en acabar el curs.</p></div><div><h3 class=\"text-sm font-extrabold eoi-text-deep mb-2\">Qualificacions</h3><p class=\"mb-2.5 text-slate-700\">Les qualificacions finals poden ser:</p><div class=\"overflow-x-auto rounded-xl border eoi-border-soft\">\n      <table class=\"w-full text-left text-xs sm:text-sm\">\n        <thead class=\"eoi-bg-primary text-white\"><tr><th class=\"px-4 py-2.5 font-bold\">Qualificació final</th><th class=\"px-4 py-2.5 font-bold\">Descripció</th></tr></thead>\n        <tbody class=\"divide-y divide-slate-200/70 bg-white\">\n          <tr><td class=\"whitespace-nowrap px-4 py-2.5 font-extrabold eoi-text-deep\">APTE/A</td><td class=\"px-4 py-2.5 text-slate-700\">Superació del nivell segons els criteris establerts.</td></tr>\n          <tr><td class=\"whitespace-nowrap px-4 py-2.5 font-extrabold eoi-text-deep\">NO APTE/A</td><td class=\"px-4 py-2.5 text-slate-700\">No superació del nivell en l’avaluació corresponent.</td></tr>\n          <tr><td class=\"whitespace-nowrap px-4 py-2.5 font-extrabold eoi-text-deep\">NP</td><td class=\"px-4 py-2.5 text-slate-700\">No presentat/da, si no s’ha presentat a cap de les parts.</td></tr>\n        </tbody>\n      </table>\n    </div><p class=\"mt-2.5 text-slate-700\">Es donarà a l’alumne informació sobre el nivell assolit en les diferents habilitats i subcompetències.</p></div><div class=\"rounded-xl border eoi-border-soft eoi-bg-soft p-4\"><h3 class=\"text-sm font-extrabold eoi-text-deep\">Calendari escolar</h3><p class=\"mt-1 text-slate-700\">Podeu consultar o imprimir el calendari escolar <a href=\"https://www.eoibd.cat/calendari-escolar\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"font-bold eoi-text-primary underline decoration-[#D49AA9] underline-offset-4 hover:opacity-80\">aquí</a>.</p></div><div class=\"rounded-xl border border-amber-200 bg-amber-50/70 p-4\"><h3 class=\"text-sm font-extrabold text-amber-900 mb-2\">Observacions importants</h3><ol class=\"list-decimal space-y-2 pl-5 text-slate-700\"><li>Els departaments poden programar exàmens o proves d’assistència obligatòria en dates posteriors a l’últim dia de classe.</li><li>En cas de necessitat i per causes degudament justificades, l’Escola podrà modificar la data de finalització de les classes.</li></ol></div></div>"}]}};
+
+    const UI_STRINGS = {
+      es: {
+        backLink: "Guías de los cursos",
+        expandAll: "Expandir todo",
+        collapseAll: "Contraer todo",
+        btnTop: "Arriba",
+        allCollapsed: "Todas las secciones principales contraídas",
+        allExpanded: "Todas las secciones desplegadas",
+        partialExpanded: (open, total) => `${open} de ${total} secciones desplegadas`
+      },
+      ca: {
+        backLink: "Guies dels cursos",
+        expandAll: "Desplega-ho tot",
+        collapseAll: "Contreu-ho tot",
+        btnTop: "Amunt",
+        allCollapsed: "Totes les seccions principals contretes",
+        allExpanded: "Totes les seccions desplegades",
+        partialExpanded: (open, total) => `${open} de ${total} seccions desplegades`
+      }
+    };
+
+    let currentLang = "es";
+    try {
+      const saved = localStorage.getItem("eoi_ui_lang");
+      if (saved === "es" || saved === "ca") currentLang = saved;
+    } catch (e) {}
+
+    const openState = new Set();
+
+    function renderSections() {
+      const container = document.getElementById("sections-container");
+      const sections = COURSE_DATA.sections[currentLang];
+      container.innerHTML = sections
+        .map((sec, idx) => {
+          const num = idx + 1;
+          const id = `sec-${num}`;
+          const isOpen = openState.has(id);
+          return `
+            <section id="${id}" data-accordion-item data-main-section style="animation-delay: ${Math.min(idx * 45, 250)}ms" class="animate-enter rounded-2xl border eoi-border-soft bg-white shadow-xs overflow-hidden transition-shadow duration-200 hover:shadow-md ${isOpen ? "is-open" : ""}">
+              <button
+                type="button"
+                aria-expanded="${isOpen}"
+                onclick="toggleAccordion('${id}')"
+                class="flex w-full items-center justify-between gap-4 px-5 py-4 text-left transition-colors duration-200 hover:bg-[#FBF3F6] sm:px-6"
+              >
+                <div class="flex items-center gap-3.5">
+                  <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg eoi-bg-primary text-sm font-extrabold text-white">
+                    ${num}
+                  </span>
+                  <h2 class="text-base font-extrabold tracking-tight text-slate-900 sm:text-lg">
+                    ${sec.title}
+                  </h2>
+                </div>
+                <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#F7ECEF] eoi-text-primary">
+                  <svg class="chevron-icon h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </span>
+              </button>
+              <div id="${id}-body" class="accordion-collapse ${isOpen ? "is-expanded" : ""}">
+                <div class="accordion-inner">
+                  <div class="border-t border-slate-200/80 px-5 py-5 text-sm leading-relaxed text-slate-700 sm:px-6">
+                    ${sec.html}
+                  </div>
+                </div>
+              </div>
+            </section>
+          `;
+        })
+        .join("");
+
+      openState.forEach((id) => {
+        if (id.startsWith("sub-")) {
+          const item = document.getElementById(id);
+          const body = document.getElementById(id + "-body");
+          const btn = item ? item.querySelector(":scope > button") : null;
+          if (item && body && btn) {
+            item.classList.add("is-open");
+            body.classList.add("is-expanded");
+            btn.setAttribute("aria-expanded", "true");
+          }
+        }
+      });
+
+      updateStatus();
+    }
+
+    function setUILang(lang) {
+      currentLang = lang;
+      try {
+        localStorage.setItem("eoi_ui_lang", lang);
+      } catch (e) {}
+
+      const ui = UI_STRINGS[lang];
+      document.documentElement.lang = lang;
+      document.title = COURSE_DATA.docTitle[lang];
+
+      const btnEs = document.getElementById("lang-btn-es");
+      const btnCa = document.getElementById("lang-btn-ca");
+      if (lang === "es") {
+        btnEs.className = "rounded-full px-3 py-1 text-xs font-bold transition-all duration-200 eoi-bg-primary text-white shadow-xs";
+        btnCa.className = "rounded-full px-3 py-1 text-xs font-bold text-slate-600 transition-all duration-200 hover:text-[#B51748]";
+      } else {
+        btnCa.className = "rounded-full px-3 py-1 text-xs font-bold transition-all duration-200 eoi-bg-primary text-white shadow-xs";
+        btnEs.className = "rounded-full px-3 py-1 text-xs font-bold text-slate-600 transition-all duration-200 hover:text-[#B51748]";
+      }
+
+      document.getElementById("back-link-text").textContent = ui.backLink;
+      document.getElementById("page-title").textContent = COURSE_DATA.title[lang];
+      document.getElementById("page-subtitle").textContent = COURSE_DATA.subtitle[lang];
+      document.getElementById("btn-expand-text").textContent = ui.expandAll;
+      document.getElementById("btn-collapse-text").textContent = ui.collapseAll;
+      document.getElementById("btn-top-text").textContent = ui.btnTop;
+
+      renderSections();
+    }
+
+    function updateStatus() {
+      const ui = UI_STRINGS[currentLang];
+      const mains = document.querySelectorAll("[data-main-section]");
+      let openCount = 0;
+      mains.forEach((el) => {
+        if (el.classList.contains("is-open")) openCount++;
+      });
+      const status = document.getElementById("accordion-status");
+      if (!status) return;
+      if (openCount === 0) {
+        status.textContent = ui.allCollapsed;
+      } else if (openCount === mains.length) {
+        status.textContent = ui.allExpanded;
+      } else {
+        status.textContent = ui.partialExpanded(openCount, mains.length);
+      }
+    }
+
+    function toggleAccordion(id) {
+      const item = document.getElementById(id);
+      if (!item) return;
+      const body = document.getElementById(id + "-body");
+      const btn = item.querySelector(":scope > button");
+      const isOpen = item.classList.contains("is-open");
+      if (isOpen) {
+        item.classList.remove("is-open");
+        if (body) body.classList.remove("is-expanded");
+        if (btn) btn.setAttribute("aria-expanded", "false");
+        openState.delete(id);
+      } else {
+        item.classList.add("is-open");
+        if (body) body.classList.add("is-expanded");
+        if (btn) btn.setAttribute("aria-expanded", "true");
+        openState.add(id);
+      }
+      updateStatus();
+    }
+
+    function expandAll() {
+      document.querySelectorAll("[data-accordion-item]").forEach((item) => {
+        item.classList.add("is-open");
+        const body = document.getElementById(item.id + "-body");
+        const btn = item.querySelector(":scope > button");
+        if (body) body.classList.add("is-expanded");
+        if (btn) btn.setAttribute("aria-expanded", "true");
+        openState.add(item.id);
+      });
+      updateStatus();
+    }
+
+    function collapseAll() {
+      document.querySelectorAll("[data-accordion-item]").forEach((item) => {
+        item.classList.remove("is-open");
+        const body = document.getElementById(item.id + "-body");
+        const btn = item.querySelector(":scope > button");
+        if (body) body.classList.remove("is-expanded");
+        if (btn) btn.setAttribute("aria-expanded", "false");
+      });
+      openState.clear();
+      updateStatus();
+    }
+
+    (function () {
+      const btn = document.getElementById("btn-volver-arriba");
+      if (!btn) return;
+      window.addEventListener("scroll", function () {
+        if (window.scrollY > 240) {
+          btn.classList.remove("translate-y-4", "opacity-0", "pointer-events-none");
+          btn.classList.add("translate-y-0", "opacity-100");
+        } else {
+          btn.classList.add("translate-y-4", "opacity-0", "pointer-events-none");
+          btn.classList.remove("translate-y-0", "opacity-100");
+        }
+      }, { passive: true });
+    })();
+
+    setUILang(currentLang);
+  </script>
+</body>
+</html>
