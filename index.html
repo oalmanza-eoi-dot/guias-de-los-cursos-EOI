@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Guías de los cursos — EOI Barcelona Drassanes</title>
+  <title>Guies dels cursos — EOI Barcelona Drassanes</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     :root {
@@ -150,32 +150,32 @@
               ESCOLA OFICIAL D'IDIOMES · EOI BARCELONA DRASSANES
             </p>
 
-            <!-- Selector Castellano / Català -->
-            <div class="inline-flex rounded-full border border-slate-200 bg-slate-100/80 p-0.5" role="group" aria-label="Selector de idioma">
-              <button
-                type="button"
-                id="lang-btn-es"
-                onclick="setUILang('es')"
-                class="rounded-full px-3 py-1 text-xs font-bold transition-all duration-200 eoi-bg-primary text-white shadow-xs"
-              >
-                Castellano
-              </button>
+            <!-- Selector Català / Castellano -->
+            <div class="inline-flex rounded-full border border-slate-200 bg-slate-100/80 p-0.5" role="group" aria-label="Selector d'idioma">
               <button
                 type="button"
                 id="lang-btn-ca"
                 onclick="setUILang('ca')"
-                class="rounded-full px-3 py-1 text-xs font-bold text-slate-600 transition-all duration-200 hover:text-[#B51748]"
+                class="rounded-full px-3 py-1 text-xs font-bold transition-all duration-200 eoi-bg-primary text-white shadow-xs"
               >
                 Català
+              </button>
+              <button
+                type="button"
+                id="lang-btn-es"
+                onclick="setUILang('es')"
+                class="rounded-full px-3 py-1 text-xs font-bold text-slate-600 transition-all duration-200 hover:text-[#B51748]"
+              >
+                Castellano
               </button>
             </div>
           </div>
 
           <h1 id="page-title" class="mt-2 text-2xl font-extrabold tracking-tight eoi-text-deep sm:text-3xl">
-            Guías de los cursos
+            Guies dels cursos
           </h1>
           <p id="page-subtitle" class="mt-1.5 text-sm leading-relaxed text-slate-600">
-            Consulta los programas oficiales por idioma y nivel, así como los horarios y grupos de oferta específica del curso académico 2026-27.
+            Consulta els programes oficials per idioma i nivell, així com els horaris i grups d'oferta específica del curs acadèmic 2026-27.
           </p>
         </div>
       </div>
@@ -349,7 +349,7 @@
     class="fixed bottom-5 right-5 z-50 translate-y-4 opacity-0 pointer-events-none flex items-center gap-1.5 rounded-full eoi-bg-primary px-4 py-2.5 text-sm font-bold text-white shadow-lg transition-all duration-300 hover:-translate-y-0.5 active:scale-95 focus:outline-none focus:ring-2 focus:ring-[#B51748]/40"
   >
     <span>↑</span>
-    <span id="btn-top-text">Arriba</span>
+    <span id="btn-top-text">Amunt</span>
   </button>
 
   <script>
@@ -705,7 +705,7 @@
       }
     };
 
-    let currentLang = "es";
+    let currentLang = "ca";
     try {
       const savedLang = localStorage.getItem("eoi_ui_lang");
       if (savedLang === "es" || savedLang === "ca") currentLang = savedLang;
